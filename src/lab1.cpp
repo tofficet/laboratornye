@@ -16,13 +16,20 @@ class encoder {
     ~encoder();
     void encode(char const* input, char const* output, bool flag);
     void mutator(unsigned char const* key, size_t key_size);
+    encoder(const encoder& other);
+    encoder& operator=(const encoder& other);
 };
 
 encoder::encoder(unsigned char const* key, size_t key_size) {
-    std::cout << "Constructor working...\n";
+ try{
     state_ = new unsigned char[256];
-    key_size_ = key_size;
     key_ = new unsigned char[key_size_];
+ } catch (const std::bad_alloc& e){
+    std::cerr<<"Error: "<< e.what()<<std::endl;
+    throw;
+ }
+
+    key_size_ = key_size;
     i = 0;
     j = 0;
 
@@ -31,8 +38,58 @@ encoder::encoder(unsigned char const* key, size_t key_size) {
     }
 }
 
+encoder::encoder(const encoder& other) {
+    key_size_ = other.key_size_;
+    try{
+    key_ = new unsigned char[key_size_];
+    state_ = new unsigned char[256];
+    }catch(const std::bad_alloc& e){
+        std::cerr<<"Error: "<< e.what()<<std::endl;
+        throw;
+    }
+
+    for (size_t index = 0; index < key_size_; ++index) {
+        key_[index] = other.key_[index];
+    }
+    for (int index = 0; index < 256; ++index) {
+        state_[index] = other.state_[index];
+    }
+    i = other.i;
+    j = other.j;
+    t = other.t;
+}
+
+encoder& encoder::operator=(const encoder& other) {
+    if (this == &other) {
+        return *this;
+    }
+
+    delete[] key_;
+    delete[] state_;
+
+    key_size_ = other.key_size_;
+    try{
+    key_ = new unsigned char[key_size_];
+    state_ = new unsigned char[256];
+    }catch(const std::bad_alloc& e){
+        std::cerr<<"Error: "<< e.what()<<std::endl;
+        throw;
+    }
+
+    for (size_t index = 0; index < key_size_; ++index) {
+        key_[index] = other.key_[index];
+    }
+    for (int index = 0; index < 256; ++index) {
+        state_[index] = other.state_[index];
+    }
+    i = other.i;
+    j = other.j;
+    t = other.t;
+
+    return *this;
+}
+
 encoder::~encoder() {
-    std::cout << "Destructor working...\n";
     delete[] key_;
     delete[] state_;
 }
@@ -45,13 +102,19 @@ void encoder::mutator(const unsigned char* new_key, size_t new_key_size) {
 
     delete[] key_;
     key_size_ = new_key_size;
+
+    try{
     key_ = new unsigned char[key_size_];
+    }catch(const std::bad_alloc& e){
+        std::cerr<<"Error: "<< e.what()<<std::endl;
+        throw;
+    }
+    
 
     for (size_t i = 0; i < key_size_; ++i) {
         key_[i] = new_key[i];
     }
 
-    std::cout << "Mutator completed.\n";
     KSA();
 }
 
@@ -87,7 +150,6 @@ void encoder::encode(char const* input, char const* output, bool flag) {
     std::ifstream inputFile(input, std::ios::binary);
     std::ofstream outputFile(output, std::ios::binary);
 
-    std::cout << "Processing...\n";
     KSA();
 
     char byte;
@@ -118,10 +180,8 @@ int main() {
     const char* encrypted = "../src/encrypted.txt";
     const char* decrypted = "../src/decrypted.txt";
 
-    std::cout << "Encrypting...\n";
     ob.encode(input, encrypted, flag);
 
-    std::cout << "Decrypting...\n";
     ob.encode(encrypted, decrypted, flag);
 
     return 0;
