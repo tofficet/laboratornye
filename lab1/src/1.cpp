@@ -96,7 +96,6 @@ encoder::~encoder() {
 
 void encoder::mutator(const unsigned char* new_key, size_t new_key_size) {
     if (new_key_size > 256) {
-        std::cout << "Error\n";
         return;
     }
 
@@ -176,9 +175,9 @@ int main() {
 
     ob.mutator(new_key, new_key_size);
 
-    const char* input = "../lab1/input.txt";
-    const char* encrypted = "../lab1/encrypted.txt";
-    const char* decrypted = "../lab1/decrypted.txt";
+    const char* input = "../test/input.txt";
+    const char* encrypted = "../test/encrypted.txt";
+    const char* decrypted = "../test/decrypted.txt";
 
     ob.encode(input, encrypted, flag);
 
