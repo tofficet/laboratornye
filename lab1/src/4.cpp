@@ -1,31 +1,39 @@
 #include <iostream>
-#include <cmath> 
+#include <cmath>
+#include <stdexcept>
 
 class matrix {
 private:
     double** x;
     size_t n, m;
 
+    void allocate_memory();
+    void deallocate_memory();
+    void copy_data(const matrix& other);
+    void check_dimensions(const matrix& other, const std::string& op) const;
+    void check_square(const std::string& op) const;
+    bool is_zero(double value) const;
+
 public:
     matrix(size_t n, size_t m);
-    ~matrix();
+    virtual ~matrix();
     matrix(const matrix& other);
     matrix& operator=(const matrix& other);
 
-    matrix sum(const matrix& other) const;
-    matrix elementwise_multiply(const matrix& other) const;
-    matrix multiply_by_scalar(double scalar) const;
-    matrix subtract(const matrix& other) const;
-    matrix transpose() const;
-    double determinant() const;
-    matrix inverse() const; 
-    void print() const;
-    double* operator[](size_t i) {return x[i];}
-    const double* operator[](size_t i) const {return x[i];}
-
+    matrix operator+(const matrix& other) const;
+    matrix operator*(const matrix& other) const;
+    matrix operator*(double scalar) const;
+    matrix operator-(const matrix& other) const;
+    matrix operator!() const; // transpose
+    double operator~() const; // determinant
+    
+    matrix inverse() const;
+    friend std::ostream& operator<<(std::ostream& os, const matrix& mat);
+    double* operator[](size_t i) { return x[i]; }
+    const double* operator[](size_t i) const { return x[i]; }
 };
 
-matrix::matrix(size_t n, size_t m) : n(n), m(m) {
+void matrix::allocate_memory() {
     x = new double*[n];
     for (size_t i = 0; i < n; ++i) {
         x[i] = new double[m];
@@ -35,109 +43,120 @@ matrix::matrix(size_t n, size_t m) : n(n), m(m) {
     }
 }
 
-matrix::~matrix() {
+void matrix::deallocate_memory() {
     for (size_t i = 0; i < n; ++i) {
         delete[] x[i];
     }
     delete[] x;
+}
+
+void matrix::copy_data(const matrix& other) {
+    for (size_t i = 0; i < n; ++i) {
+        for (size_t j = 0; j < m; ++j) {
+            x[i][j] = other.x[i][j];
+        }
+    }
+}
+
+void matrix::check_dimensions(const matrix& other, const std::string& op) const {
+    if (n != other.n || m != other.m) {
+        throw std::invalid_argument("Matrix dimensions mismatch for " + op);
+    }
+}
+
+void matrix::check_square(const std::string& op) const {
+    if (n != m) {
+        throw std::invalid_argument("Matrix must be square for " + op);
+    }
+}
+
+bool matrix::is_zero(double value) const {
+    return std::abs(value) < 1e-10;
+}
+
+matrix::matrix(size_t n, size_t m) : n(n), m(m) {
+    allocate_memory();
+}
+
+matrix::~matrix() {
+    deallocate_memory();
 }
 
 matrix::matrix(const matrix& other) : n(other.n), m(other.m) {
-    x = new double*[n];
-    for (size_t i = 0; i < n; ++i) {
-        x[i] = new double[m];
-        for (size_t j = 0; j < m; ++j) {
-            x[i][j] = other.x[i][j];
-        }
-    }
+    allocate_memory();
+    copy_data(other);
 }
 
 matrix& matrix::operator=(const matrix& other) {
-    if (this == &other) return *this; 
-
-    for (size_t i = 0; i < n; ++i) {
-        delete[] x[i];
+    if (this != &other) {
+        deallocate_memory();
+        n = other.n;
+        m = other.m;
+        allocate_memory();
+        copy_data(other);
     }
-    delete[] x;
-
-    n = other.n;
-    m = other.m;
-    x = new double*[n];
-    for (size_t i = 0; i < n; ++i) {
-        x[i] = new double[m];
-        for (size_t j = 0; j < m; ++j) {
-            x[i][j] = other.x[i][j];
-        }
-    }
-
     return *this;
 }
 
-matrix matrix::sum(const matrix& other) const {
+matrix matrix::operator+(const matrix& other) const {
+    check_dimensions(other, "addition");
     matrix result(n, m);
-
     for (size_t i = 0; i < n; ++i) {
         for (size_t j = 0; j < m; ++j) {
             result.x[i][j] = x[i][j] + other.x[i][j];
         }
     }
-
     return result;
 }
 
-matrix matrix::elementwise_multiply(const matrix& other) const {
-
-    matrix result(n, m);
-
+matrix matrix::operator*(const matrix& other) const {
+    if (m != other.n) {
+        throw std::invalid_argument("Matrix dimensions mismatch for multiplication");
+    }
+    matrix result(n, other.m);
     for (size_t i = 0; i < n; ++i) {
-        for (size_t j = 0; j < m; ++j) {
-            result.x[i][j] = x[i][j] * other.x[i][j];
+        for (size_t j = 0; j < other.m; ++j) {
+            for (size_t k = 0; k < m; ++k) {
+                result.x[i][j] += x[i][k] * other.x[k][j];
+            }
         }
     }
-
     return result;
 }
 
-
-matrix matrix::multiply_by_scalar(double scalar) const {
+matrix matrix::operator*(double scalar) const {
     matrix result(n, m);
-
     for (size_t i = 0; i < n; ++i) {
         for (size_t j = 0; j < m; ++j) {
             result.x[i][j] = x[i][j] * scalar;
         }
     }
-
     return result;
 }
 
-
-matrix matrix::subtract(const matrix& other) const {
-
+matrix matrix::operator-(const matrix& other) const {
+    check_dimensions(other, "subtraction");
     matrix result(n, m);
-
     for (size_t i = 0; i < n; ++i) {
         for (size_t j = 0; j < m; ++j) {
             result.x[i][j] = x[i][j] - other.x[i][j];
         }
     }
-
     return result;
 }
 
-matrix matrix::transpose() const {
+matrix matrix::operator!() const {
     matrix result(m, n);
     for (size_t i = 0; i < m; ++i) {
         for (size_t j = 0; j < n; ++j) {
             result.x[i][j] = x[j][i];
         }
     }
-
     return result;
 }
 
-
-double matrix::determinant() const {
+double matrix::operator~() const {
+    check_square("determinant");
     matrix temp(*this);
     double det = 1.0;
     size_t swapCount = 0;
@@ -150,7 +169,7 @@ double matrix::determinant() const {
             }
         }
 
-        if (temp.x[maxRow][i] == 0) {
+        if (is_zero(temp.x[maxRow][i])) {
             return 0.0;
         }
 
@@ -169,97 +188,74 @@ double matrix::determinant() const {
         det *= temp.x[i][i];
     }
 
-    if (swapCount % 2 == 1) {
-        det *= -1;
-    }
-
-    return det;
+    return (swapCount % 2) ? -det : det;
 }
 
-
 matrix matrix::inverse() const {
-
-    double det = determinant();
-
+    check_square("inverse");
+    double det = ~(*this);
+    if (is_zero(det)) {
+        throw std::runtime_error("Matrix is singular (determinant is zero)");
+    }
 
     matrix result(n, n);
-
     for (size_t i = 0; i < n; ++i) {
         for (size_t j = 0; j < n; ++j) {
-
             matrix minor(n - 1, n - 1);
             for (size_t k = 0; k < n; ++k) {
                 for (size_t l = 0; l < n; ++l) {
                     if (k != i && l != j) {
                         size_t minorRow = k < i ? k : k - 1;
                         size_t minorCol = l < j ? l : l - 1;
-                        minor.x[minorRow][minorCol] = x[k][l];
+                        minor[minorRow][minorCol] = x[k][l];
                     }
                 }
             }
-            double cofactor = minor.determinant();
-            if ((i + j) % 2 == 1) {
-                cofactor *= -1;
+            double cofactor = ~minor;
+            if ((i + j) % 2) {
+                cofactor = -cofactor;
             }
-            result.x[j][i] = cofactor / det;
+            result[j][i] = cofactor / det;
         }
     }
-
     return result;
 }
 
-
-void matrix::print() const {
-    for (size_t i = 0; i < n; ++i) {
-        for (size_t j = 0; j < m; ++j) {
-            std::cout << x[i][j] << " ";
+std::ostream& operator<<(std::ostream& os, const matrix& mat) {
+    for (size_t i = 0; i < mat.n; ++i) {
+        for (size_t j = 0; j < mat.m; ++j) {
+            os << mat.x[i][j] << " ";
         }
-        std::cout << std::endl;
+        os << std::endl;
     }
-    std::cout << std::endl;
+    return os;
 }
 
-
 int main() {
-    matrix mat1(2, 2);
-    matrix mat2(2, 2);
+    try {
+        matrix mat1(2, 2);
+        matrix mat2(2, 2);
 
-    mat1[0][0] = 4; mat1[0][1] = 7;
-    mat1[1][0] = 2; mat1[1][1] = 6;
+        mat1[0][0] = 4; mat1[0][1] = 7;
+        mat1[1][0] = 2; mat1[1][1] = 6;
 
-    mat2[0][0] = 1; mat2[0][1] = 3;
-    mat2[1][0] = 5; mat2[1][1] = 2;
+        mat2[0][0] = 1; mat2[0][1] = 3;
+        mat2[1][0] = 5; mat2[1][1] = 2;
 
+        std::cout << "Matrix 1:\n" << mat1 << std::endl;
+        std::cout << "Matrix 2:\n" << mat2 << std::endl;
+        
+        std::cout << "Sum:\n" << mat1 + mat2 << std::endl;
+        std::cout << "Element-wise multiplication:\n" << mat1 * mat2 << std::endl;
+        std::cout << "Multiplication by scalar (5):\n" << mat1 * 5 << std::endl;
+        std::cout << "Subtraction:\n" << mat1 - mat2 << std::endl;
+        std::cout << "Transpose:\n" << !mat1 << std::endl;
+        std::cout << "Determinant: " << ~mat1 << std::endl;
+        std::cout << "Inverse matrix:\n" << mat1.inverse() << std::endl;
 
-    mat1.print();
-    mat2.print();
-    
-    matrix mat3 = mat1.sum(mat2);
-    std::cout << "Sum: " << std::endl;
-    mat3.print();
-
-    matrix mat4 = mat1.elementwise_multiply(mat2);
-    std::cout << "Element-wise multiplication: " << std::endl;
-    mat4.print();
-
-    matrix mat5 = mat1.multiply_by_scalar(5);
-    std::cout << "Multiplication by scalar (5): " << std::endl;
-    mat5.print();
-
-    matrix mat6 = mat1.subtract(mat2);
-    std::cout << "Subtraction: " << std::endl;
-    mat6.print();
-
-    matrix mat7 = mat1.transpose();
-    std::cout << "Transpose: " << std::endl;
-    mat7.print();
-
-    double det = mat1.determinant();
-    std::cout << "Determinant: " << det << std::endl;
-
-    matrix inv = mat1.inverse();
-    std::cout << "Inverse matrix: " << std::endl;
-    inv.print();
-
+    } catch (const std::exception& e) {
+        std::cerr << "Error: " << e.what() << std::endl;
+        return 1;
+    }
     return 0;
 }

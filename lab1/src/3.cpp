@@ -1,96 +1,130 @@
 #include <iostream>
 #include <cmath>
+#include <limits>
 
-class complex {
+class Complex {
 private:
-    double mn_value;
-    double ds_value;
+    double real;
+    double imag;
+    static const double epsilon;  // Заменили constexpr на const
 
 public:
-    complex(double mn_value = 0, double ds_value = 0);
-    complex sum(const complex& other) const;
-    complex vic(const complex& other) const;
-    complex umn(const complex& other) const;
-    complex del(const complex& other) const;
-    double abs() const;
-    double tan() const;
+    Complex(double real = 0.0, double imag = 0.0);
+    Complex add(const Complex& other) const;
+    Complex subtract(const Complex& other) const;
+    Complex multiply(const Complex& other) const;
+    Complex divide(const Complex& other) const;
+    double magnitude() const;
+    double argument() const;
+    bool isZero() const;
 
-    friend std::ostream& operator<<(std::ostream &out, const complex& c);
-    friend std::istream& operator>>(std::istream &in, complex& c);
+    friend std::ostream& operator<<(std::ostream &out, const Complex& c);
+    friend std::istream& operator>>(std::istream &in, Complex& c);
+    friend bool operator==(const Complex& a, const Complex& b);
 };
 
-complex::complex(double mn_value, double ds_value) {
-    this->mn_value = mn_value;
-    this->ds_value = ds_value;
+// Инициализация статической константы
+const double Complex::epsilon = 1e-9;
+
+Complex::Complex(double real, double imag) : real(real), imag(imag) {}
+
+Complex Complex::add(const Complex& other) const {
+    return Complex(real + other.real, imag + other.imag);
 }
 
-
-complex complex::sum(const complex& other) const {
-    return complex(mn_value + other.mn_value, ds_value + other.ds_value);
+Complex Complex::subtract(const Complex& other) const {
+    return Complex(real - other.real, imag - other.imag);
 }
 
-complex complex::vic(const complex& other) const {
-    return complex(mn_value - other.mn_value, ds_value - other.ds_value);
+Complex Complex::multiply(const Complex& other) const {
+    return Complex(real * other.real - imag * other.imag,
+                   real * other.imag + imag * other.real);
 }
 
-complex complex::umn(const complex& other) const {
-    return complex(mn_value * other.mn_value - ds_value * other.ds_value,
-                   mn_value * other.ds_value + ds_value * other.mn_value);
+Complex Complex::divide(const Complex& other) const {
+    double denominator = other.real * other.real + other.imag * other.imag;
+    return Complex((real * other.real + imag * other.imag) / denominator,
+                   (imag * other.real - real * other.imag) / denominator);
 }
 
-complex complex::del(const complex& other) const {
-    double denominator = other.mn_value * other.mn_value + other.ds_value * other.ds_value;
-    return complex((mn_value * other.mn_value + ds_value * other.ds_value) / denominator,
-                   (ds_value * other.mn_value - mn_value * other.ds_value) / denominator);
+double Complex::magnitude() const {
+    return std::sqrt(real * real + imag * imag);
 }
 
-double complex::abs() const {
-    return std::sqrt(mn_value * mn_value + ds_value * ds_value);
+double Complex::argument() const {
+    return std::atan2(imag, real);
 }
 
-double complex::tan() const {
-    return std::atan2(ds_value, mn_value);
+bool Complex::isZero() const {
+    return std::abs(real) < epsilon && std::abs(imag) < epsilon;
 }
 
-std::ostream& operator<<(std::ostream &out, const complex& c) {
-    out << c.mn_value;
-    if (c.ds_value < 0) {
-        out << " - " << -c.ds_value << "i";
-    } else if (c.ds_value > 0) {
-        out << " + " << c.ds_value << "i";
+std::ostream& operator<<(std::ostream &out, const Complex& c) {
+    if (c.isZero()) {
+        out << "0";
+        return out;
     }
+
+    bool realPrinted = false;
+    
+    if (std::abs(c.real) >= Complex::epsilon) {
+        out << c.real;
+        realPrinted = true;
+    }
+
+    if (std::abs(c.imag) >= Complex::epsilon) {
+        if (realPrinted && c.imag > 0) {
+            out << " + ";
+        } else if (realPrinted && c.imag < 0) {
+            out << " - ";
+        }
+        
+        if (!realPrinted || std::abs(c.imag) >= Complex::epsilon) {
+            if (!realPrinted) {
+                if (c.imag < 0) out << "-";
+            }
+            if (std::abs(std::abs(c.imag) - 1.0) >= Complex::epsilon) {
+                out << std::abs(c.imag);
+            }
+            out << "i";
+        }
+    } else if (!realPrinted) {
+        out << "0";
+    }
+
     return out;
 }
 
-std::istream& operator>>(std::istream &in, complex& c) {
-    in >> c.mn_value >> c.ds_value;
+std::istream& operator>>(std::istream &in, Complex& c) {
+    in >> c.real >> c.imag;
     return in;
 }
 
+bool operator==(const Complex& a, const Complex& b) {
+    return std::abs(a.real - b.real) < Complex::epsilon && 
+           std::abs(a.imag - b.imag) < Complex::epsilon;
+}
+
 int main() {
-    complex ob1(2, 1);
-    complex ob2(2, -1);
+    Complex c1(2.0, 1.0);
+    Complex c2(2.0, -1.0);
+    Complex zero(0.0, 0.0);
 
-    std::cout << "ob1 = " << ob1 << std::endl;
-    std::cout << "ob2 = " << ob2 << std::endl;
+    std::cout << "c1 = " << c1 << std::endl;
+    std::cout << "c2 = " << c2 << std::endl;
+    std::cout << "zero = " << zero << std::endl;
 
-    complex result = ob1.sum(ob2);
-    std::cout << "ob1 + ob2 = " << result << std::endl;
+    std::cout << "c1 + c2 = " << c1.add(c2) << std::endl;
+    std::cout << "c1 - c2 = " << c1.subtract(c2) << std::endl;
+    std::cout << "c1 * c2 = " << c1.multiply(c2) << std::endl;
+    std::cout << "c1 / c2 = " << c1.divide(c2) << std::endl;
 
-    complex result1 = ob1.vic(ob2);
-    std::cout << "ob1 - ob2 = " << result1 << std::endl;
+    std::cout << "|c1| = " << c1.magnitude() << std::endl;
+    std::cout << "arg(c1) = " << c1.argument() << std::endl;
 
-    complex result2 = ob1.umn(ob2);
-    std::cout << "ob1 * ob2 = " << result2 << std::endl;
-
-    complex result3 = ob1.del(ob2);
-    std::cout << "ob1 / ob2 = " << result3 << std::endl;
-
-    double result4 = ob1.abs();
-    std::cout << "|ob1| = " << result4 << std::endl;
-
-    double result5 = ob1.tan();
-    std::cout << "arg(ob1) = " << result5 << std::endl;
+    std::cout << "Is c1 zero? " << (c1.isZero() ? "Yes" : "No") << std::endl;
+    std::cout << "Is zero zero? " << (zero.isZero() ? "Yes" : "No") << std::endl;
+    std::cout << "c1 == c2? " << (c1 == c2 ? "Yes" : "No") << std::endl;
 
     return 0;
 }
