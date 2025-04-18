@@ -24,8 +24,8 @@ public:
     matrix operator*(const matrix& other) const;
     matrix operator*(double scalar) const;
     matrix operator-(const matrix& other) const;
-    matrix operator!() const; // transpose
-    double operator~() const; // determinant
+    matrix operator!() const; 
+    double operator~() const;
     
     matrix inverse() const;
     friend std::ostream& operator<<(std::ostream& os, const matrix& mat);

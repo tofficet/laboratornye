@@ -6,7 +6,7 @@ class Complex {
 private:
     double real;
     double imag;
-    static const double epsilon;  // Заменили constexpr на const
+    static const double epsilon; 
 
 public:
     Complex(double real = 0.0, double imag = 0.0);
@@ -23,7 +23,6 @@ public:
     friend bool operator==(const Complex& a, const Complex& b);
 };
 
-// Инициализация статической константы
 const double Complex::epsilon = 1e-9;
 
 Complex::Complex(double real, double imag) : real(real), imag(imag) {}
@@ -73,21 +72,16 @@ std::ostream& operator<<(std::ostream &out, const Complex& c) {
     }
 
     if (std::abs(c.imag) >= Complex::epsilon) {
-        if (realPrinted && c.imag > 0) {
-            out << " + ";
-        } else if (realPrinted && c.imag < 0) {
-            out << " - ";
+        if (realPrinted) {
+            out << (c.imag > 0 ? " + " : " - ");
+        } else if (c.imag < 0) {
+            out << "-";
         }
         
-        if (!realPrinted || std::abs(c.imag) >= Complex::epsilon) {
-            if (!realPrinted) {
-                if (c.imag < 0) out << "-";
-            }
-            if (std::abs(std::abs(c.imag) - 1.0) >= Complex::epsilon) {
-                out << std::abs(c.imag);
-            }
-            out << "i";
+        if (std::abs(std::abs(c.imag) - 1.0) >= Complex::epsilon) {
+            out << std::abs(c.imag);
         }
+        out << "i";
     } else if (!realPrinted) {
         out << "0";
     }
@@ -108,11 +102,9 @@ bool operator==(const Complex& a, const Complex& b) {
 int main() {
     Complex c1(2.0, 1.0);
     Complex c2(2.0, -1.0);
-    Complex zero(0.0, 0.0);
 
     std::cout << "c1 = " << c1 << std::endl;
     std::cout << "c2 = " << c2 << std::endl;
-    std::cout << "zero = " << zero << std::endl;
 
     std::cout << "c1 + c2 = " << c1.add(c2) << std::endl;
     std::cout << "c1 - c2 = " << c1.subtract(c2) << std::endl;
@@ -121,10 +113,6 @@ int main() {
 
     std::cout << "|c1| = " << c1.magnitude() << std::endl;
     std::cout << "arg(c1) = " << c1.argument() << std::endl;
-
-    std::cout << "Is c1 zero? " << (c1.isZero() ? "Yes" : "No") << std::endl;
-    std::cout << "Is zero zero? " << (zero.isZero() ? "Yes" : "No") << std::endl;
-    std::cout << "c1 == c2? " << (c1 == c2 ? "Yes" : "No") << std::endl;
 
     return 0;
 }

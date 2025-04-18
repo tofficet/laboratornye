@@ -143,8 +143,8 @@ int main() {
         unsigned char new_key[] = {0x10, 0x20, 0x30, 0x40, 0x50, 0x60};
         ob.mutator(new_key, sizeof(new_key));
 
-        ob.encode("input.txt", "encrypted.txt", true);
-        ob.encode("encrypted.txt", "decrypted.txt", true);
+        ob.encode("../test/input.txt", "../test/encrypted.txt", true);
+        ob.encode("../test/encrypted.txt", "../test/decrypted.txt", true);
     } catch (const std::exception& e) {
         std::cerr << "Error: " << e.what() << std::endl;
         return 1;

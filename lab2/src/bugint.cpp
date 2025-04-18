@@ -303,6 +303,35 @@ bugint &bugint::operator++()
     return *this;
 }
 
+bool bugint::is_negative() const {
+    return negative_flag; // где negative_flag - это член класса, хранящий информацию о знаке
+}
+
+int bugint::compare(const bugint&first, const bugint&second){
+    if (first.is_negative() && !second.is_negative()){
+        return -1;
+    }
+    if (!first.is_negative() && second.is_negative()){
+        return 1;
+    }
+    if (first.is_negative() && second.is_negative()){
+        return compare(-second, -first);
+    }
+    if (first.get_digits_count()>second.get_digits_count()){
+        return 1;
+    }
+    if (first.get_digits_count()<second.get_digits_count()){
+        return -1;
+    }
+    for (size_t i=0; i<first.get_digits_count();++i){
+        if (first[i]>second[i]) return 1;
+        if (first[i]<second[i]) return -1;
+
+    }
+    return 0;
+}
+
+
 bugint const bugint::operator++(
     int)
 {
@@ -495,37 +524,37 @@ bugint::division_result bugint::division(
 bool bugint::operator==(
     bugint const &other) const
 {
-
+    return bugint::compare(*this, other)==0;
 }
 
 bool bugint::operator!=(
     bugint const &other) const
 {
-
+    return !(*this==other);
 }
 
 bool bugint::operator<(
     bugint const &other) const
 {
-
+    return bugint::compare(*this,other) <0;
 }
 
 bool bugint::operator<=(
     bugint const &other) const
 {
-
+    return bugint::compare(*this,other)<=0;
 }
 
 bool bugint::operator>(
     bugint const &other) const
 {
-
+    return (*this<other);
 }
 
 bool bugint::operator>=(
     bugint const &other) const
 {
-
+    return *this<=other;
 }
 
 bugint bugint::operator~() const

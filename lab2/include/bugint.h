@@ -1,7 +1,6 @@
-#ifndef COURSE1_CPP_RGU_BUGINT_H
-#define COURSE1_CPP_RGU_BUGINT_H
+#ifndef BUGINT_H
+#define BUGINT_H
 
-#include <corecrt.h>
 #include <iostream>
 
 class bugint final
@@ -245,6 +244,9 @@ public:
         std::istream &stream,
         bugint &value);
 
+public:
+    int compare(const bugint& first, const bugint& second);
+    bool is_negative() const;
 };
 
 // big_integer("1234", 10) += 10;
@@ -253,4 +255,4 @@ public:
 // std::cout << x;
 // x[2] = 10;
 
-#endif //COURSE1_CPP_RGU_BUGINT_H
+#endif //BUGINT_H
