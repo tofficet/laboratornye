@@ -89,7 +89,7 @@ stack<T> &stack<T>::operator=(stack<T> const &other)
     if (this != &other){
         *_values=*other._values;
     }
-    return this*;
+    return *this;
 }
 
 template<typename T>

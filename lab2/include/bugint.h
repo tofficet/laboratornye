@@ -245,8 +245,9 @@ public:
         bugint &value);
 
 public:
-    int compare(const bugint& first, const bugint& second);
+    static int compare(const bugint& first, const bugint& second);
     bool is_negative() const;
+    bool negative_flag;
 };
 
 // big_integer("1234", 10) += 10;
