@@ -38,7 +38,7 @@ public:
         int_wrapper  &&other) noexcept{
             if (this != &other){
                 delete _value_ptr;
-                _value_ptr-other._value_ptr;
+                _value_ptr=other._value_ptr;
                 other._value_ptr=nullptr;
             }
             return *this;
@@ -47,14 +47,24 @@ public:
 
 public:
 
+
     // TODO: arithmetic operators
     // +=, +, -=, -, *=, *, /=, /, %=, %, ++v, v++, --v, v--
 
     // TODO: bitwise operators
     // <<=, <<, >>=, >>, &=, &, |=, |=, ^=, ^
 
-    // TODO: stream operator
-    // <<, >>
+    friend std::ostream &operator<<(
+        std::ostream &stream,
+        int_wrapper const &value){
+            stream << const_cast<int_wrapper &>(value) << ' ';
+        }
+
+    friend std::istream &operator>>(
+        std::istream &stream,
+        int_wrapper &value){
+            stream >> const_cast<int_wrapper &>(value);
+        }
 
 };
 
