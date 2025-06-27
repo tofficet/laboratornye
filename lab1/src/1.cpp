@@ -2,7 +2,7 @@
 #include <iostream>
 #include <stdexcept>
 
-class encoder {
+class encoder final {
 private:
     unsigned char* key_;
     size_t key_size_;
