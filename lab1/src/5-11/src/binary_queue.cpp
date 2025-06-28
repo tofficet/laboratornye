@@ -1,44 +1,55 @@
 #include "../include/binary_queue.h"
 #include <cstring>
-#include <iostream>
+#include <stdexcept>
+#include <utility>
 
-binary_queue::binary_queue(const binary_queue& data) {
-    copy_data(*this, const_cast<binary_queue&>(data));
+binary_queue::binary_queue(int n) : 
+    _data_arr(new pq_node[n]),
+    _size(0),
+    _capacity(n)
+{}
+
+binary_queue::binary_queue() : binary_queue(16) {} 
+
+
+binary_queue::binary_queue(const binary_queue& other) :
+    _data_arr(new pq_node[other._capacity]),
+    _size(other._size),
+    _capacity(other._capacity)
+{
+    for (int i = 0; i < _size; ++i) {
+        _data_arr[i].key = other._data_arr[i].key;
+        
+        if (other._data_arr[i].data) {
+            _data_arr[i].data = new char[std::strlen(other._data_arr[i].data) + 1];
+            std::strcpy(_data_arr[i].data, other._data_arr[i].data);
+        } else {
+            _data_arr[i].data = nullptr;
+        }
+    }
 }
 
-void copy_data(binary_queue& dst, binary_queue& src) {
-    binary_queue new_queue(src._size);
-    std::memcpy(new_queue._data_arr, src._data_arr, src._size * sizeof(binary_queue::pq_node*));
-}
-
-binary_queue::binary_queue(int n) {
-    _data_arr = new pq_node[n];
-    _size = 0;
-    _capacity = n;
-}
-binary_queue::binary_queue() {
-	_data_arr = new pq_node[16];
-	_size = 0;
-	_capacity = 16;
-}
 binary_queue::~binary_queue() {
     for (int i = 0; i < _size; ++i) {
         delete[] _data_arr[i].data;
     }
-	delete[] _data_arr;
+    delete[] _data_arr;
 }
 
-binary_queue& binary_queue::operator= (const binary_queue& arg) {
 
-    if (&arg != this) {
-        copy_data(*this, const_cast<binary_queue&>(arg));
+void binary_queue::swap(pq_node& a, pq_node& b) {
+    std::swap(a.data, b.data);
+    std::swap(a.key, b.key);
+}
+
+binary_queue& binary_queue::operator=(const binary_queue& other) {
+    if (this != &other) {
+        binary_queue temp(other);
+        std::swap(*this, temp);
     }
     return *this;
 }
 
-void new_data() {
-
-}
 
 void binary_queue::insert(const char* data, int key) {
     if (_size >= _capacity) {
@@ -52,35 +63,44 @@ void binary_queue::insert(const char* data, int key) {
 }
 
 char* binary_queue::find_max() {
-    if (_size == 0)
-        throw std::runtime_error("Queue is null");
-    return const_cast<char*>(_data_arr[0].data);
+    if (_size == 0) {
+        throw std::runtime_error("Queue is empty");
+    }
+    return _data_arr[0].data;
 }
 
 char* binary_queue::remove_max() {
-    if (_size == 0)
-        throw std::runtime_error("Queue is null");
+    if (_size == 0) {
+        throw std::runtime_error("Queue is empty");
+    }
 
     char* max_data = _data_arr[0].data;
-
     char* data_copy = new char[std::strlen(max_data) + 1];
     std::strcpy(data_copy, max_data);
-
     delete[] max_data;
 
     _data_arr[0] = _data_arr[--_size];
-
     sift_down(0);
 
     return data_copy;
 }
 
-void binary_queue::swap(pq_node& a, pq_node& b) {
-    pq_node temp = a;
-    a = b;
-    b = temp;
+priority_queue* binary_queue::merge(priority_queue* q) {
+    binary_queue* other = dynamic_cast<binary_queue*>(q);
+    if (!other) {
+        throw std::invalid_argument("Invalid queue type for merge");
+    }
+
+    for (int i = 0; i < other->_size; ++i) {
+        char* data = new char[std::strlen(other->_data_arr[i].data) + 1];
+        std::strcpy(data, other->_data_arr[i].data);
+        insert(data, other->_data_arr[i].key);
+        delete[] data;
+    }
+    return this;
 }
 
+// Private utility methods
 void binary_queue::sift_up(int index) {
     while (index > 0 && _data_arr[(index - 1) / 2].key < _data_arr[index].key) {
         swap(_data_arr[(index - 1) / 2], _data_arr[index]);
@@ -109,33 +129,27 @@ void binary_queue::sift_down(int index) {
 }
 
 void binary_queue::resize() {
-
-    pq_node* new_arr = new pq_node[_capacity * 2];
-
+    _capacity *= 2;
+    pq_node* new_arr = new pq_node[_capacity];
+    
     for (int i = 0; i < _size; ++i) {
-        new_arr[i] = _data_arr[i];
+        new_arr[i].key = _data_arr[i].key;
+        if (_data_arr[i].data) {
+            new_arr[i].data = new char[std::strlen(_data_arr[i].data) + 1];
+            std::strcpy(new_arr[i].data, _data_arr[i].data);
+            delete[] _data_arr[i].data;
+        } else {
+            new_arr[i].data = nullptr;
+        }
     }
+    
     delete[] _data_arr;
     _data_arr = new_arr;
-    _capacity *= 2;
-}
-
-priority_queue* binary_queue::merge(priority_queue* q) {
-    
-    binary_queue* cast_q = dynamic_cast<binary_queue*>(q);
-    int size = cast_q->get_size();
-
-    for (int i = 0; i < size; ++i) {
-        int key = cast_q->_data_arr[0].key;
-        char* str = cast_q->remove_max();
-        this->insert(str, key);
-        delete[] str;
-    }
-    return this;
 }
 
 int binary_queue::get_max_priority() {
-    if (_size == 0)
-        throw std::runtime_error("Queue is null");
+    if (_size == 0) {
+        throw std::runtime_error("Queue is empty");
+    }
     return _data_arr[0].key;
 }

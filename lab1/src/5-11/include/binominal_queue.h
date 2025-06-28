@@ -47,7 +47,7 @@ public:
 	char* remove_max() override;
 	priority_queue* merge(priority_queue* q) override;
 
-	void printHeap()
+	void printHeap() const
 	{
 		binominal_node* current = _head;
 		while (current != nullptr) 
@@ -60,7 +60,7 @@ public:
 	}
 
 private:
-	void printTree(binominal_node* root)
+	void printTree(binominal_node* root) const
 	{
 		std::cout << root->data << " ";
 		binominal_node* child = root->child;

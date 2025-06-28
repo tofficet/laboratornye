@@ -5,7 +5,7 @@
 
 class binary_queue final: public priority_queue
 {
-	typedef struct priority_queue_node
+	typedef struct priority_queue_node final
 	{
 		char* data;
 		int key;
@@ -35,6 +35,5 @@ private:
 	void sift_down(int index);
 	void resize();
 	int get_max_priority();
-	friend void copy_data(binary_queue& a, binary_queue& b);
 };
 #endif
