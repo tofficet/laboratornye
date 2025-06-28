@@ -6,13 +6,10 @@
 
 #include "../src/5-11/include/decart_queue.h"
 
-
-int program_11_main(int argc, char* argv[])
-{
+int program_11_main(int argc, char* argv[]) {
     {
         decart_queue q1;
-        for (int i = 1; i < 11; ++i)
-        {
+        for (int i = 1; i < 11; ++i) {
             char str[5];
             str[0] = '*';
             snprintf(str + 1, 3, "%d", i);
@@ -27,8 +24,7 @@ int program_11_main(int argc, char* argv[])
         q1.print();
 
         decart_queue q2;
-        for (int i = 11; i < 21; ++i)
-        {
+        for (int i = 11; i < 21; ++i) {
             char str[5];
             str[0] = '*';
             snprintf(str + 1, 3, "%d", i);
@@ -47,20 +43,17 @@ int program_11_main(int argc, char* argv[])
         std::cout << "\nMax priority element: " << q1.find_max() << "\n";
 
         int size = q1.get_size();
-        for (int i = 0; i < size; ++i)
-        {
+        for (int i = 0; i < size; ++i) {
             char* str = q1.remove_max();
             std::cout << "\nDeleting max priority element ( " << str << " )\n";
             delete[] str;
         }
 
         //***********
-        if (q2.is_live())
-        {
+        if (q2.is_live()) {
             std::cout << "Q2\n";
             size = q2.get_size();
-            for (int i = 0; i < size; ++i)
-            {
+            for (int i = 0; i < size; ++i) {
                 char* str = q2.remove_max();
                 std::cout << "\nDeleting max priority element ( " << str << " )\n";
                 delete[] str;
@@ -79,8 +72,7 @@ int program_11_main(int argc, char* argv[])
         std::cout << "\n****** Queue 3 ******\n";
 
         size = q3.get_size();
-        for (int i = 0; i < size; ++i)
-        {
+        for (int i = 0; i < size; ++i) {
             char* str = q3.remove_max();
             std::cout << "\nDeleting max priority element ( " << str << " )\n";
             delete[] str;

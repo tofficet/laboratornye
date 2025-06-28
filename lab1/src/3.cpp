@@ -1,14 +1,14 @@
-#include <iostream>
 #include <cmath>
+#include <iostream>
 #include <limits>
 
 class Complex {
-private:
+   private:
     double real;
     double imag;
-    static const double epsilon; 
+    static const double epsilon;
 
-public:
+   public:
     Complex(double real = 0.0, double imag = 0.0);
     Complex add(const Complex& other) const;
     Complex subtract(const Complex& other) const;
@@ -18,8 +18,8 @@ public:
     double argument() const;
     bool isZero() const;
 
-    friend std::ostream& operator<<(std::ostream &out, const Complex& c);
-    friend std::istream& operator>>(std::istream &in, Complex& c);
+    friend std::ostream& operator<<(std::ostream& out, const Complex& c);
+    friend std::istream& operator>>(std::istream& in, Complex& c);
     friend bool operator==(const Complex& a, const Complex& b);
 };
 
@@ -27,17 +27,14 @@ const double Complex::epsilon = 1e-9;
 
 Complex::Complex(double real, double imag) : real(real), imag(imag) {}
 
-Complex Complex::add(const Complex& other) const {
-    return Complex(real + other.real, imag + other.imag);
-}
+Complex Complex::add(const Complex& other) const { return Complex(real + other.real, imag + other.imag); }
 
 Complex Complex::subtract(const Complex& other) const {
     return Complex(real - other.real, imag - other.imag);
 }
 
 Complex Complex::multiply(const Complex& other) const {
-    return Complex(real * other.real - imag * other.imag,
-                   real * other.imag + imag * other.real);
+    return Complex(real * other.real - imag * other.imag, real * other.imag + imag * other.real);
 }
 
 Complex Complex::divide(const Complex& other) const {
@@ -46,26 +43,20 @@ Complex Complex::divide(const Complex& other) const {
                    (imag * other.real - real * other.imag) / denominator);
 }
 
-double Complex::magnitude() const {
-    return std::sqrt(real * real + imag * imag);
-}
+double Complex::magnitude() const { return std::sqrt(real * real + imag * imag); }
 
-double Complex::argument() const {
-    return std::atan2(imag, real);
-}
+double Complex::argument() const { return std::atan2(imag, real); }
 
-bool Complex::isZero() const {
-    return std::abs(real) < epsilon && std::abs(imag) < epsilon;
-}
+bool Complex::isZero() const { return std::abs(real) < epsilon && std::abs(imag) < epsilon; }
 
-std::ostream& operator<<(std::ostream &out, const Complex& c) {
+std::ostream& operator<<(std::ostream& out, const Complex& c) {
     if (c.isZero()) {
         out << "0";
         return out;
     }
 
     bool realPrinted = false;
-    
+
     if (std::abs(c.real) >= Complex::epsilon) {
         out << c.real;
         realPrinted = true;
@@ -77,7 +68,7 @@ std::ostream& operator<<(std::ostream &out, const Complex& c) {
         } else if (c.imag < 0) {
             out << "-";
         }
-        
+
         if (std::abs(std::abs(c.imag) - 1.0) >= Complex::epsilon) {
             out << std::abs(c.imag);
         }
@@ -89,14 +80,13 @@ std::ostream& operator<<(std::ostream &out, const Complex& c) {
     return out;
 }
 
-std::istream& operator>>(std::istream &in, Complex& c) {
+std::istream& operator>>(std::istream& in, Complex& c) {
     in >> c.real >> c.imag;
     return in;
 }
 
 bool operator==(const Complex& a, const Complex& b) {
-    return std::abs(a.real - b.real) < Complex::epsilon && 
-           std::abs(a.imag - b.imag) < Complex::epsilon;
+    return std::abs(a.real - b.real) < Complex::epsilon && std::abs(a.imag - b.imag) < Complex::epsilon;
 }
 
 int main() {

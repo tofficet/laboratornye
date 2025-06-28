@@ -1,9 +1,9 @@
-#include <iostream>
 #include <cmath>
+#include <iostream>
 #include <stdexcept>
 
 class matrix {
-private:
+   private:
     double** x;
     size_t n, m;
 
@@ -14,7 +14,7 @@ private:
     void check_square(const std::string& op) const;
     bool is_zero(double value) const;
 
-public:
+   public:
     matrix(size_t n, size_t m);
     virtual ~matrix();
     matrix(const matrix& other);
@@ -24,9 +24,9 @@ public:
     matrix operator*(const matrix& other) const;
     matrix operator*(double scalar) const;
     matrix operator-(const matrix& other) const;
-    matrix operator!() const; 
+    matrix operator!() const;
     double operator~() const;
-    
+
     matrix inverse() const;
     friend std::ostream& operator<<(std::ostream& os, const matrix& mat);
     double* operator[](size_t i) { return x[i]; }
@@ -70,17 +70,11 @@ void matrix::check_square(const std::string& op) const {
     }
 }
 
-bool matrix::is_zero(double value) const {
-    return std::abs(value) < 1e-10;
-}
+bool matrix::is_zero(double value) const { return std::abs(value) < 1e-10; }
 
-matrix::matrix(size_t n, size_t m) : n(n), m(m) {
-    allocate_memory();
-}
+matrix::matrix(size_t n, size_t m) : n(n), m(m) { allocate_memory(); }
 
-matrix::~matrix() {
-    deallocate_memory();
-}
+matrix::~matrix() { deallocate_memory(); }
 
 matrix::matrix(const matrix& other) : n(other.n), m(other.m) {
     allocate_memory();
@@ -236,15 +230,19 @@ int main() {
         matrix mat1(2, 2);
         matrix mat2(2, 2);
 
-        mat1[0][0] = 4; mat1[0][1] = 7;
-        mat1[1][0] = 2; mat1[1][1] = 6;
+        mat1[0][0] = 4;
+        mat1[0][1] = 7;
+        mat1[1][0] = 2;
+        mat1[1][1] = 6;
 
-        mat2[0][0] = 1; mat2[0][1] = 3;
-        mat2[1][0] = 5; mat2[1][1] = 2;
+        mat2[0][0] = 1;
+        mat2[0][1] = 3;
+        mat2[1][0] = 5;
+        mat2[1][1] = 2;
 
         std::cout << "Matrix 1:\n" << mat1 << std::endl;
         std::cout << "Matrix 2:\n" << mat2 << std::endl;
-        
+
         std::cout << "Sum:\n" << mat1 + mat2 << std::endl;
         std::cout << "Element-wise multiplication:\n" << mat1 * mat2 << std::endl;
         std::cout << "Multiplication by scalar (5):\n" << mat1 * 5 << std::endl;

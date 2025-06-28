@@ -1,11 +1,10 @@
 #include <iostream>
+
 #include "../src/5-11/include/fibonacci_queue.h"
 
-int program_8_main(int argc, char* argv[])
-{
+int program_8_main(int argc, char* argv[]) {
     fibonacci_queue q1;
-    for (int i = 1; i < 11; ++i)
-    {
+    for (int i = 1; i < 11; ++i) {
         char str[5];
         str[0] = '*';
         snprintf(str + 1, 3, "%d", i);
@@ -13,8 +12,7 @@ int program_8_main(int argc, char* argv[])
     }
 
     fibonacci_queue q2;
-    for (int i = 11; i < 21; ++i)
-    {
+    for (int i = 11; i < 21; ++i) {
         char str[5];
         str[0] = '*';
         snprintf(str + 1, 3, "%d", i);
@@ -34,8 +32,7 @@ int program_8_main(int argc, char* argv[])
     std::cout << "\nMax priority element: " << q1.find_max() << "\n";
 
     int size = q1.get_size();
-    for (int i = 0; i < size; ++i)
-    {
+    for (int i = 0; i < size; ++i) {
         char* str = q1.remove_max();
         std::cout << "\nQueue after deleting max priority element ( " << str << " ):\n";
         if (i > 15) q1.printHeap();
@@ -51,7 +48,6 @@ int program_8_main(int argc, char* argv[])
 
     std::cout << "\n******\n";
     q3.printHeap();
-    
 
     return 0;
 }
