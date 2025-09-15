@@ -3,7 +3,7 @@
 #include <stdexcept>
 
 class encoder final {
-   private:
+private:
     unsigned char* key_;
     size_t key_size_;
     unsigned char* state_;
@@ -11,12 +11,12 @@ class encoder final {
 
     void KSA();
     unsigned char PRGA();
-
+    
     void allocateStateAndKey();
     void copyStateAndKey(const encoder& other);
     void deallocateResources();
 
-   public:
+public:
     encoder(unsigned char const* key, size_t key_size);
     ~encoder();
     void encode(char const* input, char const* output, bool flag);
@@ -76,7 +76,9 @@ encoder& encoder::operator=(const encoder& other) {
     return *this;
 }
 
-encoder::~encoder() { deallocateResources(); }
+encoder::~encoder() {
+    deallocateResources();
+}
 
 void encoder::mutator(const unsigned char* new_key, size_t new_key_size) {
     if (new_key_size > 256) {
@@ -86,7 +88,7 @@ void encoder::mutator(const unsigned char* new_key, size_t new_key_size) {
     deallocateResources();
     key_size_ = new_key_size;
     allocateStateAndKey();
-
+    
     for (size_t i = 0; i < key_size_; ++i) {
         key_[i] = new_key[i];
     }
@@ -121,7 +123,7 @@ unsigned char encoder::PRGA() {
 void encoder::encode(char const* input, char const* output, bool flag) {
     std::ifstream inputFile(input, std::ios::binary);
     if (!inputFile) throw std::runtime_error("Cannot open input file");
-
+    
     std::ofstream outputFile(output, std::ios::binary);
     if (!outputFile) throw std::runtime_error("Cannot open output file");
 
@@ -131,13 +133,14 @@ void encoder::encode(char const* input, char const* output, bool flag) {
     while (inputFile.get(byte)) {
         outputFile.put(byte ^ PRGA());
     }
+
 }
 
 int main() {
     try {
         unsigned char key[] = {0x01, 0x02, 0x03, 0x04, 0x05};
         encoder ob(key, sizeof(key));
-
+        
         unsigned char new_key[] = {0x10, 0x20, 0x30, 0x40, 0x50, 0x60};
         ob.mutator(new_key, sizeof(new_key));
 

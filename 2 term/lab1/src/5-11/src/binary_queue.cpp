@@ -3,13 +3,11 @@
 #include <stdexcept>
 #include <utility>
 
-binary_queue::binary_queue(int n) : 
+binary_queue::binary_queue(int n=16) : 
     _data_arr(new pq_node[n]),
     _size(0),
     _capacity(n)
 {}
-
-binary_queue::binary_queue() : binary_queue(16) {} 
 
 
 binary_queue::binary_queue(const binary_queue& other) :

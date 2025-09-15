@@ -80,6 +80,7 @@ void skew_queue::delete_queue(node* n)
 	delete_queue(n->right);
 	delete n->data;
 	delete n;
+	
 }
 
 skew_queue::node* skew_queue::deep_copy(const node* arg)
