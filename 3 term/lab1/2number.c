@@ -21,13 +21,12 @@ typedef struct {
 } ShellState;
 
 int isvalidlogin(const char *login) {
-    int len = strlen(login);
-    if (len == 0 || len > 6) return 0;
-    
-    for (int i = 0; i < len; i++) {
-        if (!isalnum(login[i])) return 0;
+    for (int i = 0; login[i] != '\0'; i++) {
+        if (!isalnum(login[i]) || i >= 6) {
+            return 0;
+        }
     }
-    return 1;
+    return (strlen(login) > 0);
 }
 
 int is_login_unique(const ShellState *state, const char *login) {
@@ -147,9 +146,8 @@ int display(ShellState *state) {
 }
 
 int register_user(ShellState *state) {
-    char login[7];
+    char login[7], input[50];
     int pin;
-    char input[50];
     
     printf("Enter login: ");
     fgets(login, sizeof(login), stdin);
@@ -186,9 +184,8 @@ int register_user(ShellState *state) {
 }
 
 int login_user(ShellState *state) {
-    char login[7];
+    char login[7], input[50];
     int pin;
-    char input[50];
     
     printf("Enter login: ");
     fgets(login, sizeof(login), stdin);
@@ -208,7 +205,7 @@ int login_user(ShellState *state) {
         }
     }
     printf("Invalid login or PIN\n");
-    return -1;
+    return -2;
 }
 
 void home(ShellState *state) {
@@ -233,7 +230,7 @@ void home(ShellState *state) {
                 }
                 break;
             case 3:
-                exit(0);
+                return; 
         }
     }
 }

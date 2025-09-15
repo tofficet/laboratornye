@@ -1,6 +1,13 @@
 #include <stdio.h>
 
 int main(int argc, char* argv[]) {
+
+    unsigned char b;
+    size_t bytes_read;
+    int iteration = 0;
+    unsigned char buffer[4];
+    unsigned char bytes_to_write[11] = {3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5};
+
     if (argc != 2) {
     return -1;
     }
@@ -10,7 +17,6 @@ int main(int argc, char* argv[]) {
         return -2;
     }
     
-    unsigned char bytes_to_write[11] = {3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5};
     fwrite(bytes_to_write, sizeof(unsigned char), 11, file);
     fclose(file);
     
@@ -18,10 +24,6 @@ int main(int argc, char* argv[]) {
     if (file == NULL) {
         return -2;
     }
-    
-    unsigned char b;
-    size_t bytes_read;
-    int iteration = 0;
     
     while (!feof(file)) {
         bytes_read = fread(&b, sizeof(unsigned char), 1, file);
@@ -45,8 +47,7 @@ int main(int argc, char* argv[]) {
         fclose(file);
         return -4;
     }
-    
-    unsigned char buffer[4];
+
     bytes_read = fread(buffer, sizeof(unsigned char), 4, file);
     
     fclose(file);
