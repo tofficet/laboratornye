@@ -50,6 +50,10 @@ int main(int argc, char* argv[]) {
 
     bytes_read = fread(buffer, sizeof(unsigned char), 4, file);
     
+    for (int i = 0; i < bytes_read; i++) {
+    printf("%c", buffer[i]);
+}
+
     fclose(file);
     
     return 0;
