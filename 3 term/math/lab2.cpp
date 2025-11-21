@@ -1,86 +1,86 @@
 #include <iostream>
 #include <fstream>
-#include <vector>
-#include <string>
+#include <cstring>
 
 using namespace std;
 
+const int MAX_ELEMENTS = 100;
+const int MAX_PAIRS = 1000;
+const int MAX_STRING_LENGTH = 50;
+
 struct Pair {
-    string first;
-    string second;
+    char first[MAX_STRING_LENGTH];
+    char second[MAX_STRING_LENGTH];
 };
 
 class RelationAnalyzer {
 private:
-    vector<string> elements;
-    vector<Pair> pairs;
+    char elements[MAX_ELEMENTS][MAX_STRING_LENGTH];
+    int elementCount;
+    Pair pairs[MAX_PAIRS];
+    int pairCount;
     
-    // Проверка существования пары в отношении
-    bool hasPair(const string& a, const string& b) {
-        for (const auto& pair : pairs) {
-            if (pair.first == a && pair.second == b) {
+    bool hasPair(const char* a, const char* b) {
+        for (int i = 0; i < pairCount; i++) {
+            if (strcmp(pairs[i].first, a) == 0 && strcmp(pairs[i].second, b) == 0) {
                 return true;
             }
         }
         return false;
     }
     
-    // Получить индекс элемента
-    int getElementIndex(const string& elem) {
-        for (int i = 0; i < elements.size(); i++) {
-            if (elements[i] == elem) return i;
+    int getElementIndex(const char* elem) {
+        for (int i = 0; i < elementCount; i++) {
+            if (strcmp(elements[i], elem) == 0) return i;
         }
         return -1;
     }
-    
+
 public:
-    void readFromFile(const string& filename) {
+    RelationAnalyzer() : elementCount(0), pairCount(0) {
+        // Инициализация массивов
+        for (int i = 0; i < MAX_ELEMENTS; i++) {
+            elements[i][0] = '\0';
+        }
+        for (int i = 0; i < MAX_PAIRS; i++) {
+            pairs[i].first[0] = '\0';
+            pairs[i].second[0] = '\0';
+        }
+    }
+    
+    void readFromFile(const char* filename) {
         ifstream file(filename);
         if (!file.is_open()) {
             cerr << "Ошибка открытия файла!" << endl;
             return;
         }
         
-        // Чтение элементов множества
-        string line;
-        getline(file, line);
+        char line[1000];
+        file.getline(line, 1000);
         
-        string element = "";
-        for (char c : line) {
-            if (c == ' ') {
-                if (!element.empty()) {
-                    elements.push_back(element);
-                    element = "";
-                }
-            } else {
-                element += c;
-            }
-        }
-        if (!element.empty()) {
-            elements.push_back(element);
+        char* token = strtok(line, " ");
+        while (token != nullptr && elementCount < MAX_ELEMENTS) {
+            strncpy(elements[elementCount], token, MAX_STRING_LENGTH - 1);
+            elements[elementCount][MAX_STRING_LENGTH - 1] = '\0';
+            elementCount++;
+            token = strtok(nullptr, " ");
         }
         
         // Чтение пар отношения
-        while (getline(file, line)) {
-            Pair pair;
-            string current = "";
-            bool isFirst = true;
+        while (file.getline(line, 1000) && pairCount < MAX_PAIRS) {
+            char first[MAX_STRING_LENGTH];
+            char second[MAX_STRING_LENGTH];
             
-            for (char c : line) {
-                if (c == ' ') {
-                    if (isFirst) {
-                        pair.first = current;
-                        current = "";
-                        isFirst = false;
-                    }
-                } else {
-                    current += c;
-                }
-            }
-            pair.second = current;
+            // Используем strtok для разделения строки на две части
+            char* token1 = strtok(line, " ");
+            char* token2 = strtok(nullptr, " ");
             
-            if (!pair.first.empty() && !pair.second.empty()) {
-                pairs.push_back(pair);
+            if (token1 != nullptr && token2 != nullptr) {
+                strncpy(pairs[pairCount].first, token1, MAX_STRING_LENGTH - 1);
+                pairs[pairCount].first[MAX_STRING_LENGTH - 1] = '\0';
+                strncpy(pairs[pairCount].second, token2, MAX_STRING_LENGTH - 1);
+                pairs[pairCount].second[MAX_STRING_LENGTH - 1] = '\0';
+                pairCount++;
             }
         }
         
@@ -88,8 +88,8 @@ public:
     }
     
     bool isReflexive() {
-        for (const auto& elem : elements) {
-            if (!hasPair(elem, elem)) {
+        for (int i = 0; i < elementCount; i++) {
+            if (!hasPair(elements[i], elements[i])) {
                 return false;
             }
         }
@@ -97,18 +97,17 @@ public:
     }
     
     bool isAntiReflexive() {
-        for (const auto& elem : elements) {
-            if (hasPair(elem, elem)) {
+        for (int i = 0; i < elementCount; i++) {
+            if (hasPair(elements[i], elements[i])) {
                 return false;
             }
         }
         return true;
     }
 
-
     bool isSymmetric() {
-        for (const auto& pair : pairs) {
-            if (!hasPair(pair.second, pair.first)) {
+        for (int i = 0; i < pairCount; i++) {
+            if (!hasPair(pairs[i].second, pairs[i].first)) {
                 return false;
             }
         }
@@ -116,8 +115,9 @@ public:
     }
     
     bool isAntiSymmetric() {
-        for (const auto& pair : pairs) {
-            if (pair.first != pair.second && hasPair(pair.second, pair.first)) {
+        for (int i = 0; i < pairCount; i++) {
+            if (strcmp(pairs[i].first, pairs[i].second) != 0 && 
+                hasPair(pairs[i].second, pairs[i].first)) {
                 return false;
             }
         }
@@ -125,10 +125,10 @@ public:
     }
     
     bool isTransitive() {
-        for (const auto& p1 : pairs) {
-            for (const auto& p2 : pairs) {
-                if (p1.second == p2.first) {
-                    if (!hasPair(p1.first, p2.second)) {
+        for (int i = 0; i < pairCount; i++) {
+            for (int j = 0; j < pairCount; j++) {
+                if (strcmp(pairs[i].second, pairs[j].first) == 0) {
+                    if (!hasPair(pairs[i].first, pairs[j].second)) {
                         return false;
                     }
                 }
@@ -137,10 +137,9 @@ public:
         return true;
     }
     
-    // Полнота (связность)
     bool isConnected() {
-        for (int i = 0; i < elements.size(); i++) {
-            for (int j = i + 1; j < elements.size(); j++) {
+        for (int i = 0; i < elementCount; i++) {
+            for (int j = i + 1; j < elementCount; j++) {
                 if (!hasPair(elements[i], elements[j]) && 
                     !hasPair(elements[j], elements[i])) {
                     return false;
@@ -154,76 +153,78 @@ public:
         return isAntiReflexive() && isAntiSymmetric();
     }
     
-    // Проверка отношения эквивалентности
     bool isEquivalence() {
         return isReflexive() && isSymmetric() && isTransitive();
     }
     
-    // Проверка отношения порядка
     bool isOrder() {
         return isReflexive() && isAntiSymmetric() && isTransitive();
     }
     
-    // Нахождение классов эквивалентности
-    vector<vector<string>> findEquivalenceClasses() {
-        vector<vector<string>> classes;
-        vector<bool> visited(elements.size(), false);
+    void findEquivalenceClasses() {
+        bool visited[MAX_ELEMENTS] = {false};
+        int classCount = 0;
         
-        for (int i = 0; i < elements.size(); i++) {
+        cout << "Классы эквивалентности:" << endl;
+        for (int i = 0; i < elementCount; i++) {
             if (!visited[i]) {
-                vector<string> equivalenceClass;
+                cout << "Класс " << ++classCount << ": {";
+                cout << elements[i];
                 
-                for (int j = 0; j < elements.size(); j++) {
-                    if (hasPair(elements[i], elements[j]) && 
+                for (int j = i + 1; j < elementCount; j++) {
+                    if (!visited[j] && hasPair(elements[i], elements[j]) && 
                         hasPair(elements[j], elements[i])) {
-                        equivalenceClass.push_back(elements[j]);
+                        cout << ", " << elements[j];
                         visited[j] = true;
                     }
                 }
-                
-                classes.push_back(equivalenceClass);
+                cout << "}" << endl;
+                visited[i] = true;
             }
         }
-        
-        return classes;
+        cout << "Индекс разбиения: " << classCount << endl;
     }
     
-    vector<string> findMinimalElements() {
-        vector<string> minimal;
+    void findMinimalElements() {
+        cout << "Минимальные элементы: {";
+        bool first = true;
         
-        for (int i = 0; i < elements.size(); i++) {
+        for (int i = 0; i < elementCount; i++) {
             bool isMinimal = true;
-            for (int j = 0; j < elements.size(); j++) {
+            for (int j = 0; j < elementCount; j++) {
                 if (i != j && hasPair(elements[j], elements[i])) {
                     isMinimal = false;
                     break;
                 }
             }
             if (isMinimal) {
-                minimal.push_back(elements[i]);
+                if (!first) cout << ", ";
+                cout << elements[i];
+                first = false;
             }
         }
-        
-        return minimal;
+        cout << "}" << endl;
     }
 
-    vector<string> findMaximalElements() {
-        vector<string> maximal;
+    void findMaximalElements() {
+        cout << "Максимальные элементы: {";
+        bool first = true;
         
-        for (int i = 0; i < elements.size(); i++) {
+        for (int i = 0; i < elementCount; i++) {
             bool isMaximal = true;
-            for (int j = 0; j < elements.size(); j++) {
+            for (int j = 0; j < elementCount; j++) {
                 if (i != j && hasPair(elements[i], elements[j])) {
                     isMaximal = false;
                     break;
                 }
             }
             if (isMaximal) {
-                maximal.push_back(elements[i]);
+                if (!first) cout << ", ";
+                cout << elements[i];
+                first = false;
             }
         }
-        
-        return maximal;
+        cout << "}" << endl;
     }
     
     void analyze() {
@@ -238,45 +239,19 @@ public:
         
         if (isEquivalence()) {
             cout << "\nОтношение является отношением эквивалентности!" << endl;
-            
-            auto classes = findEquivalenceClasses();
-            cout << "Классы эквивалентности (" << classes.size() << "):" << endl;
-            for (int i = 0; i < classes.size(); i++) {
-                cout << "Класс " << i + 1 << ": {";
-                for (int j = 0; j < classes[i].size(); j++) {
-                    cout << classes[i][j];
-                    if (j < classes[i].size() - 1) cout << ", ";
-                }
-                cout << "}" << endl;
-            }
-            cout << "Индекс разбиения: " << classes.size() << endl;
+            findEquivalenceClasses();
         }
         
         if (isOrder()) {
             cout << "\nОтношение является отношением порядка!" << endl;
-            
-            auto minimal = findMinimalElements();
-            auto maximal = findMaximalElements();
-            
-            cout << "Минимальные элементы: {";
-            for (int i = 0; i < minimal.size(); i++) {
-                cout << minimal[i];
-                if (i < minimal.size() - 1) cout << ", ";
-            }
-            cout << "}" << endl;
-            
-            cout << "Максимальные элементы: {";
-            for (int i = 0; i < maximal.size(); i++) {
-                cout << maximal[i];
-                if (i < maximal.size() - 1) cout << ", ";
-            }
-            cout << "}" << endl;
+            findMinimalElements();
+            findMaximalElements();
         }
     }
 };
 
 int main() {
-    string filename;
+    char filename[100];
     cout << "Введите название файла: ";
     cin >> filename;
     

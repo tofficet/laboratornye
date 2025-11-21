@@ -37,18 +37,15 @@ void create_process_tree(int depth) {
     pid_t pid1 = fork();
     if (pid1 == 0) {
         create_process_tree(depth - 1);
-        sleep(3600);
-        exit(0);
+        exit(0); 
     } else if (pid1 > 0) {
         pid_t pid2 = fork();
         if (pid2 == 0) {
             create_process_tree(depth - 1);
-            sleep(3600);
             exit(0);
         } else if (pid2 > 0) {
-            int status;
-            waitpid(pid1, &status, 0);
-            waitpid(pid2, &status, 0);
+            waitpid(pid1, NULL, 0);
+            waitpid(pid2, NULL, 0);
         }
     }
 }

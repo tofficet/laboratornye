@@ -167,7 +167,7 @@ void deleteSet(char name) {
     }
 }
 
-void addElement(char setName, char element) {
+void addElement(char setName, char element) {   //add A x
     if (!isPrintableChar(element)) {
         std::cout << "Элемент должен быть печатным символом" << std::endl;
         return;
@@ -183,7 +183,7 @@ void addElement(char setName, char element) {
     std::cout << "Элемент '" << element << "' добавлен в множество " << setName << std::endl;
 }
 
-void removeElement(char setName, char element) {
+void removeElement(char setName, char element) {   //rem A x
     Set* set = findSet(setName);
     if (set == nullptr) {
         std::cout << "Множество " << setName << " не найдено" << std::endl;
@@ -198,7 +198,7 @@ void removeElement(char setName, char element) {
     }
 }
 
-void powerSet(char setName) {
+void powerSet(char setName) {     //pow A 
     Set* set = findSet(setName);
     if (set == nullptr) {
         std::cout << "Множество " << setName << " не найдено" << std::endl;
@@ -240,7 +240,7 @@ void powerSet(char setName) {
     delete[] elements;
 }
 
-void seeSets(char setName = '\0') {
+void seeSets(char setName = '\0') {   //see [A] 
     if (setName == '\0') {
         if (setsHead == nullptr) {
             std::cout << "Нет множеств" << std::endl;
@@ -267,7 +267,7 @@ void seeSets(char setName = '\0') {
     }
 }
 
-void unionSets(char a, char b) {
+void unionSets(char a, char b) {   // A + B 
     Set* setA = findSet(a);
     Set* setB = findSet(b);
     
@@ -317,7 +317,7 @@ void unionSets(char a, char b) {
 }
 
 
-void intersectionSets(char a, char b) {
+void intersectionSets(char a, char b) {    //A & B
     Set* setA = findSet(a);
     Set* setB = findSet(b);
     
@@ -349,7 +349,7 @@ void intersectionSets(char a, char b) {
     std::cout << "}" << std::endl;
 }
 
-void differenceSets(char a, char b) {
+void differenceSets(char a, char b) {      //A - B 
     Set* setA = findSet(a);
     Set* setB = findSet(b);
     
@@ -388,7 +388,7 @@ void differenceSets(char a, char b) {
     std::cout << "}" << std::endl;
 }
 
-void subsetCheck(char a, char b) {
+void subsetCheck(char a, char b) {     //A < B
     Set* setA = findSet(a);
     Set* setB = findSet(b);
     
@@ -418,7 +418,7 @@ void subsetCheck(char a, char b) {
     }
 }
 
-void equalityCheck(char a, char b) {
+void equalityCheck(char a, char b) {    // A = B
     Set* setA = findSet(a);
     Set* setB = findSet(b);
     
