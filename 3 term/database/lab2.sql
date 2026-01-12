@@ -246,7 +246,7 @@ BEGIN
     
     RETURN TRUE;
 END;
-$$ LANGUAGE plpgsql;
+
 
 -----------------------------------------------------------
 
@@ -285,7 +285,7 @@ BEGIN
     
     RETURN TRUE;
 END;
-$$ LANGUAGE plpgsql;
+
 
 -----------------------------------------------------------
 
@@ -346,7 +346,7 @@ BEGIN
         RAISE EXCEPTION 'Экземпляр недоступен для выдачи';
     END IF;
 END;
-$$ LANGUAGE plpgsql;
+
 
 -----------------------------------------------------------
 
@@ -379,7 +379,7 @@ BEGIN
         END,
         bi.location;
 END;
-$$ LANGUAGE plpgsql;
+
 
 -----------------------------------------------------------
 
@@ -466,7 +466,7 @@ BEGIN
         RETURN NEW;
     END IF;
 END;
-$$ LANGUAGE plpgsql;
+
 
 CREATE TRIGGER trg_log_author
     AFTER INSERT OR UPDATE OR DELETE ON public.author

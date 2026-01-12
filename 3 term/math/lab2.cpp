@@ -5,7 +5,7 @@
 using namespace std;
 
 const int MAX_ELEMENTS = 100;
-const int MAX_PAIRS = 1000;
+const int MAX_PAIRS = 100;
 const int MAX_STRING_LENGTH = 50;
 
 struct Pair {
@@ -71,7 +71,6 @@ public:
             char first[MAX_STRING_LENGTH];
             char second[MAX_STRING_LENGTH];
             
-            // Используем strtok для разделения строки на две части
             char* token1 = strtok(line, " ");
             char* token2 = strtok(nullptr, " ");
             

@@ -1,0 +1,1082 @@
+\documentclass[a4paper,14pt]{extarticle}
+\usepackage[T2A]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[russian]{babel}
+
+\usepackage[dvips]{graphicx}
+\usepackage{color}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{xcolor}
+
+\usepackage{setspace}
+\usepackage{indentfirst}
+\usepackage{textcomp}
+\usepackage{ifthen}
+\usepackage{calc}
+\usepackage{float} % Добавлен пакет для управления размещением float-объектов
+
+\hypersetup{%
+	unicode,%
+	linkcolor=blue,
+	colorlinks=true,%
+	pdftitle={Курсовая работа по дисциплине "Фундаментальная информатика"},%
+}
+
+\thispagestyle{empty}
+
+\setlength{\voffset}{-.8in}
+\setlength{\hoffset}{-.75in}
+\addtolength{\textheight}{1.6in}
+\addtolength{\textwidth}{1.5in}
+
+\onehalfspacing
+
+% Настройки для цветных листингов
+\lstset{
+    language=SQL,
+    basicstyle=\ttfamily\footnotesize,
+    keywordstyle=\color{blue}\bfseries,
+    commentstyle=\color{green!50!black},
+    stringstyle=\color{red},
+    showstringspaces=false,
+    breaklines=true,
+    frame=single,
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    tabsize=2,
+    captionpos=b,
+    literate={а}{{\selectfont\char224}}1
+             {б}{{\selectfont\char225}}1
+             {в}{{\selectfont\char226}}1
+             {г}{{\selectfont\char227}}1
+             {д}{{\selectfont\char228}}1
+             {е}{{\selectfont\char229}}1
+             {ё}{{\"e}}1
+             {ж}{{\selectfont\char230}}1
+             {з}{{\selectfont\char231}}1
+             {и}{{\selectfont\char232}}1
+             {й}{{\selectfont\char233}}1
+             {к}{{\selectfont\char234}}1
+             {л}{{\selectfont\char235}}1
+             {м}{{\selectfont\char236}}1
+             {н}{{\selectfont\char237}}1
+             {о}{{\selectfont\char238}}1
+             {п}{{\selectfont\char239}}1
+             {р}{{\selectfont\char240}}1
+             {с}{{\selectfont\char241}}1
+             {т}{{\selectfont\char242}}1
+             {у}{{\selectfont\char243}}1
+             {ф}{{\selectfont\char244}}1
+             {х}{{\selectfont\char245}}1
+             {ц}{{\selectfont\char246}}1
+             {ч}{{\selectfont\char247}}1
+             {ш}{{\selectfont\char248}}1
+             {щ}{{\selectfont\char249}}1
+             {ъ}{{\selectfont\char250}}1
+             {ы}{{\selectfont\char251}}1
+             {ь}{{\selectfont\char252}}1
+             {э}{{\selectfont\char253}}1
+             {Ю}{{\selectfont\char254}}1
+             {я}{{\selectfont\char255}}1
+             {А}{{\selectfont\char192}}1
+             {Б}{{\selectfont\char193}}1
+             {В}{{\selectfont\char194}}1
+             {Г}{{\selectfont\char195}}1
+             {Д}{{\selectfont\char196}}1
+             {Е}{{\selectfont\char197}}1
+             {Ё}{{\"E}}1
+             {Ж}{{\selectfont\char198}}1
+             {З}{{\selectfont\char199}}1
+             {И}{{\selectfont\char200}}1
+             {Й}{{\selectfont\char201}}1
+             {К}{{\selectfont\char202}}1
+             {Л}{{\selectfont\char203}}1
+             {М}{{\selectfont\char204}}1
+             {Н}{{\selectfont\char205}}1
+             {О}{{\selectfont\char206}}1
+             {П}{{\selectfont\char207}}1
+             {Р}{{\selectfont\char208}}1
+             {С}{{\selectfont\char209}}1
+             {Т}{{\selectfont\char210}}1
+             {У}{{\selectfont\char211}}1
+             {Ф}{{\selectfont\char212}}1
+             {Х}{{\selectfont\char213}}1
+             {Ц}{{\selectfont\char214}}1
+             {Ч}{{\selectfont\char215}}1
+             {Ш}{{\selectfont\char216}}1
+             {Щ}{{\selectfont\char217}}1
+             {Ъ}{{\selectfont\char218}}1
+             {Ы}{{\selectfont\char219}}1
+             {Ь}{{\selectfont\char220}}1
+             {Э}{{\selectfont\char221}}1
+             {Ю}{{\selectfont\char222}}1
+             {Я}{{\selectfont\char223}}1
+}
+
+% Поменяйте фамилию, имя и отчество в команде FIO
+\newcommand{\FIO}{Молчанов Даниил Максимович}
+
+% Поменяйте название программного продукта в команде SOFTWARE
+\newcommand{\SOFTWARE}{Система управления библиотекой}
+
+% Укажите номер группы (110 или 111)
+\newcommand{\GROUP}{ИТПМ-124}
+
+\begin{document}
+\input{titulCP.tex}
+\newpage
+
+\tableofcontents
+\newpage
+
+\section{Введение}
+В данном разделе описывается цель курсовой работы, решаемые задачи и структура документа.
+
+\section{Техническое задание}
+Разработка системы управления библиотекой на основе реляционной базы данных PostgreSQL. Система должна обеспечивать:
+\begin{itemize}
+    \item Управление каталогом книг, авторов и издательств
+    \item Учет читателей и их истории выдачи
+    \item Управление физическими экземплярами книг с учетом их состояния
+    \item Бронирование книг читателями с ограничениями
+    \item Логирование операций в системе
+    \item Формирование отчетов и представлений
+    \item Проверку корректности операций (просрочки, доступность)
+    \item Автоматическое обновление статусов экземпляров
+    \item Поиск книг по различным критериям
+\end{itemize}
+
+\section{Проектирование базы данных}
+
+\subsection{Создание базы данных}
+\begin{lstlisting}[caption={Создание базы данных t01\_library}]
+CREATE DATABASE t01_library;
+\end{lstlisting}
+
+\begin{figure}[H] % Изменено с [ht] на [H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{1.png}
+    \caption{Результат создания базы данных}
+    \label{fig:db_creation}
+\end{figure}
+
+\subsection{Создание таблицы author}
+\begin{lstlisting}[caption={Создание таблицы author}]
+create table public.author(
+id serial primary key,
+first_name varchar(80) not null,
+last_name varchar(80) not null
+);
+\end{lstlisting}
+
+\subsection{Создание таблицы publishing\_house}
+\begin{lstlisting}[caption={Создание таблицы publishing\_house}]
+create table public.publishing_house(
+id SERIAL primary key,
+name varchar(80) not null,
+city varchar(80) not null
+);
+\end{lstlisting}
+
+\subsection{Создание таблицы book}
+\begin{lstlisting}[caption={Создание таблицы book}]
+create table public.book(
+id serial primary key,
+name_book varchar(80) not null,
+author int references public.author(id),
+publisher_code int references public.publishing_house(id),
+edition int not null,
+year_publication int,
+circulation int
+);
+\end{lstlisting}
+
+\subsection{Создание таблицы reader}
+\begin{lstlisting}[caption={Создание таблицы reader}]
+create type sex as enum ('male', 'female');
+
+create table public.reader(
+id serial primary key,
+first_name varchar(80) not null,
+last_name varchar(80) not null,
+date_of_birth date,
+gender sex,
+date_of_regestration date
+);
+\end{lstlisting}
+
+\subsection{Создание таблицы book\_instance}
+\begin{lstlisting}[caption={Создание таблицы book\_instance}]
+create type availability as enum ('in stock', 'issued', 'reserved');
+create type state as enum ('excellent', 'good', 'satisfactory', 'dilapidated', 'lost');
+
+create table public.book_instance(
+id serial primary key,
+book_information int references public.book(id),
+state state, 
+status availability,
+location varchar(80) not null
+);
+\end{lstlisting}
+
+\subsection{Создание таблицы issuance}
+\begin{lstlisting}[caption={Создание таблицы issuance}]
+create table public.issuance(
+reader_id int references public.reader(id),
+book_id int references public.book_instance(id),
+date_time timestamp,
+date_return_expected date not null,
+date_return_fact date NULL
+);
+\end{lstlisting}
+
+\subsection{Создание таблицы booking}
+\begin{lstlisting}[caption={Создание таблицы booking}]
+create table booking(
+id serial primary key,
+number_reader_ticket int references public.reader(id),
+book_information int references public.book(id),
+data_time timestamp,
+min_state state
+);
+\end{lstlisting}
+
+\begin{figure}[H] % Изменено с [ht] на [H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{2.png} % имя вашего файла
+    \caption{Результат создания таблиц}
+    \label{fig:table_booking}
+\end{figure}
+
+\section{Реализация бизнес-логики}
+
+\subsection{Управление авторами (CRUD операции)}
+\begin{lstlisting}[caption={CRUD операции для таблицы author}]
+INSERT INTO author (first_name, last_name) VALUES 
+('Александр','Пушкин'),
+('Михаил','Булгаков'),
+('Лев','Толстой'),
+('Федор','Достоевский'),
+('Антон','Чехов'),
+('Николай','Гоголь'),
+('Иван','Тургенев'),
+('Владимир','Набоков'),
+('Сергей','Есенин'),
+('Анна','Ахматова')
+RETURNING id;
+
+UPDATE author SET last_name='Ахматова-Горенко' WHERE first_name='Анна';
+
+DELETE FROM author WHERE id IN (2, 5);
+\end{lstlisting}
+
+\begin{figure}[H] % Изменено с [ht] на [H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{3.png}
+    \caption{Результат операции INSERT}
+    \label{fig:author_insert}
+\end{figure}
+
+\begin{figure}[H] % Изменено с [ht] на [H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{4.png}
+    \caption{Результат операции UPDATE}
+    \label{fig:author_update}
+\end{figure}
+
+\begin{figure}[H] % Изменено с [ht] на [H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{5.png}
+    \caption{Результат операции DELETE}
+    \label{fig:author_delete}
+\end{figure}
+
+\subsection{Управление издательствами}
+\begin{lstlisting}[caption={CRUD операции для таблицы publishing\_house}]
+INSERT INTO publishing_house (name, city) VALUES 
+('Солнышко','Москва'),
+('АСТ','Москва'),
+('Эксмо','Санкт-Петербург'),
+('Просвещение','Москва'),
+('Росмэн','Казань'),
+('Дрофа','Москва'),
+('Фламинго','Санкт-Петербург'),
+('Олма-Пресс','Новосибирск'),
+('Азбука','Москва'),
+('Амфора','Екатеринбург')
+RETURNING id;
+
+UPDATE publishing_house SET name='Просвещение+' WHERE id=4;
+
+DELETE FROM publishing_house WHERE id IN (2, 4, 6);
+\end{lstlisting}
+
+\begin{figure}[H] % Изменено с [ht] на [H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{6.png}
+    \caption{Результат операций с издательствами}
+    \label{fig:publishing_house_results}
+\end{figure}
+
+\begin{figure}[H] % Изменено с [ht] на [H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{7.png}
+    \caption{Дополнительный результат для издательств}
+    \label{fig:publishing_house_extra1}
+\end{figure}
+
+\begin{figure}[H] % Изменено с [ht] на [H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{8.png}
+    \caption{Финальный результат для издательств}
+    \label{fig:publishing_house_extra2}
+\end{figure}
+
+\subsection{Управление информацией о книгах}
+\begin{lstlisting}[caption={CRUD операции для таблицы book}]
+INSERT INTO book (name_book, author, publisher_code, edition, year_publication, circulation) VALUES
+('Колобок', 1, 1, 1, 2012, 5000),
+('Маша и медведь', 1, 3, 1, 2002, 5200),
+('Мастер и Маргарита', 2, 2, 1, 1966, 10000),
+('Война и мир', 3, 3, 1, 1869, 8000),
+('Преступление и наказание', 4, 1, 2, 1866, 7000),
+('Евгений Онегин', 1, 2, 3, 1833, 12000),
+('Мертвые души', 6, 3, 1, 1842, 6000),
+('Отцы и дети', 7, 1, 2, 1862, 5500),
+('Лолита', 8, 2, 1, 1955, 3000),
+('Анна Каренина', 3, 3, 2, 1877, 9000)
+RETURNING id;
+
+UPDATE book SET name_book='Маша и три медведя' WHERE id=2;
+
+DELETE FROM book WHERE id IN (9,10);
+\end{lstlisting}
+
+\begin{figure}[H] % Изменено с [ht] на [H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{9.png}
+    \caption{Результат операций с книгами - часть 1}
+    \label{fig:book_results1}
+\end{figure}
+
+\begin{figure}[H] % Изменено с [ht] на [H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{10.png}
+    \caption{Результат операций с книгами - часть 2}
+    \label{fig:book_results2}
+\end{figure}
+
+\begin{figure}[H] % Изменено с [ht] на [H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{11.png}
+    \caption{Результат операций с книгами - часть 3}
+    \label{fig:book_results3}
+\end{figure}
+
+\subsection{Управление читателями}
+\begin{lstlisting}[caption={CRUD операции для таблицы reader}]
+INSERT INTO reader (first_name, last_name, date_of_birth, gender, date_of_regestration) VALUES
+('Даниил', 'Молчанов', '2006-10-25', 'male', CURRENT_DATE),
+('Иван', 'Иванов', '1950-10-24', 'male', CURRENT_DATE),
+('Алексей', 'Перов', '1980-09-21', 'male', CURRENT_DATE),
+('Мария', 'Иванова', '2000-05-15', 'female', '2024-01-10'),
+('Ольга', 'Петрова', '1995-12-01', 'female', CURRENT_DATE - INTERVAL '5 days'),
+('Сергей', 'Сидоров', '1975-03-18', 'male', CURRENT_DATE - INTERVAL '10 days'),
+('Екатерина', 'Кузнецова', '1988-07-30', 'female', CURRENT_DATE - INTERVAL '3 days'),
+('Дмитрий', 'Васильев', '1992-11-11', 'male', '2024-01-15'),
+('Анастасия', 'Попова', '1999-04-22', 'female', CURRENT_DATE),
+('Михаил', 'Соколов', '1965-08-14', 'male', CURRENT_DATE - INTERVAL '7 days')
+RETURNING id;
+
+UPDATE reader SET date_of_regestration='2024-01-20' WHERE id=10;
+
+DELETE FROM reader WHERE id IN (1,2,3);
+\end{lstlisting}
+
+\begin{figure}[H] % Изменено с [ht] на [H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{12.png}
+    \caption{Результат операций с читателями - часть 1}
+    \label{fig:reader_results1}
+\end{figure}
+
+\begin{figure}[H] % Изменено с [ht] на [H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{13.png}
+    \caption{Результат операций с читателями - часть 2}
+    \label{fig:reader_results2}
+\end{figure}
+
+\begin{figure}[H] % Изменено с [ht] на [H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{14.png}
+    \caption{Результат операций с читателями - часть 3}
+    \label{fig:reader_results3}
+\end{figure}
+
+\subsection{Управление экземплярами книг}
+\begin{lstlisting}[caption={CRUD операции для таблицы book\_instance}]
+INSERT INTO book_instance (book_information, state, status, location) VALUES
+(1, 'good', 'in stock', 'Стеллаж 1'),
+(2, 'excellent', 'reserved', 'Стеллаж 2'),
+(3, 'good', 'issued', 'Стеллаж 3'),
+(4, 'good', 'in stock', 'Стеллаж 4'),
+(5, 'satisfactory', 'in stock', 'Стеллаж 5'),
+(6, 'excellent', 'in stock', 'Стеллаж 1'),
+(7, 'good', 'reserved', 'Стеллаж 2'),
+(8, 'satisfactory', 'issued', 'Стеллаж 3'),
+(9, 'good', 'in stock', 'Стеллаж 4'),
+(10, 'excellent', 'in stock', 'Стеллаж 5')
+RETURNING id;
+
+UPDATE book_instance SET status='issued' WHERE id=9;
+
+DELETE FROM book_instance WHERE id IN (4);
+\end{lstlisting}
+
+\begin{figure}[H] % Изменено с [ht] на [H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{15.png}
+    \caption{Результат операций с экземплярами книг - часть 1}
+    \label{fig:instance_results1}
+\end{figure}
+
+\begin{figure}[H] % Изменено с [ht] на [H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{16.png}
+    \caption{Результат операций с экземплярами книг - часть 2}
+    \label{fig:instance_results2}
+\end{figure}
+
+\begin{figure}[H] % Изменено с [ht] на [H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{17.png}
+    \caption{Результат операций с экземплярами книг - часть 3}
+    \label{fig:instance_results3}
+\end{figure}
+
+\subsection{Сценарий выдачи книги}
+\begin{lstlisting}[caption={Процедура выдачи книги}]
+insert into public.issuance (reader_id, book_id, date_time,date_return_expected,date_return_fact)
+values(2,2,CURRENT_TIMESTAMP(0),CURRENT_DATE+ interval '14 days',null)
+returning reader_id, book_id;
+
+update public.book_instance
+set status='issued'
+where id=2;
+\end{lstlisting}
+
+\begin{figure}[H] % Изменено с [ht] на [H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{18.png}
+    \caption{Результат выдачи книги}
+    \label{fig:issue_book}
+\end{figure}
+
+\begin{figure}[H] % Изменено с [ht] на [H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{19.png}
+    \caption{Результат обновления статуса книги}
+    \label{fig:issue_book_update}
+\end{figure}
+
+\subsection{Сценарий возврата книги}
+\begin{lstlisting}[caption={Процедура возврата книги}]
+update public.book_instance
+set status='in stock'
+where id=2;
+
+update public.issuance
+set date_return_fact=CURRENT_DATE
+where book_id=2 and reader_id=2;
+\end{lstlisting}
+
+\begin{figure}[H] % Изменено с [ht] на [H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{20.png}
+    \caption{Результат возврата книги - обновление статуса}
+    \label{fig:return_book_status}
+\end{figure}
+
+\begin{figure}[H] % Изменено с [ht] на [H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{21.png}
+    \caption{Результат возврата книги - обновление даты возврата}
+    \label{fig:return_book_date}
+\end{figure}
+
+\subsection{Представление выданных книг}
+\begin{lstlisting}[caption={Представление issued\_books}]
+insert into public.issuance (reader_id, book_id, date_time,date_return_expected,date_return_fact)
+values
+    (1,2,CURRENT_TIMESTAMP(0)- interval '3 days', CURRENT_DATE+ interval '11 days',null),
+    (2,3,CURRENT_TIMESTAMP(0)- interval '8 days', CURRENT_DATE+ interval '2 days',null);
+
+UPDATE public.book_instance
+set status = 'issued'
+WHERE id IN (2,3);
+\end{lstlisting}
+
+\begin{figure}[H] % Изменено с [ht] на [H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{22.png}
+    \caption{Результат добавления новых выдач}
+    \label{fig:new_issues}
+\end{figure}
+
+\begin{figure}[H] % Изменено с [ht] на [H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{23.png}
+    \caption{Результат обновления статуса экземпляров}
+    \label{fig:update_instance_status}
+\end{figure}
+
+\subsection{Представление просроченных выдач}
+\begin{lstlisting}[caption={Представление overdue\_books}]
+CREATE OR REPLACE VIEW public.issued_books_view AS
+SELECT 
+    r.last_name AS reader_last_name,
+    r.first_name AS reader_first_name,
+    a.last_name AS author_last_name,
+    a.first_name AS author_first_name,
+    b.name_book AS book_title,
+    bi.state AS book_condition,
+    i.date_time AS issue_date
+FROM public.issuance i
+JOIN public.reader r ON i.reader_id = r.id
+JOIN public.book_instance bi ON i.book_id = bi.id
+JOIN public.book b ON bi.book_information = b.id
+JOIN public.author a ON b.author = a.id
+WHERE i.date_return_fact IS NULL;
+
+SELECT * FROM public.issued_books_view;
+\end{lstlisting}
+
+\begin{figure}[H] % Изменено с [ht] на [H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{24.png}
+    \caption{Результат представления issued\_books\_view}
+    \label{fig:issued_books_view_result}
+\end{figure}
+
+\subsection{Модификация выдачи с проверкой просрочек}
+\begin{lstlisting}[caption={Модифицированная процедура выдачи}]
+CREATE OR REPLACE VIEW public.overdue_books_view AS
+SELECT 
+    r.last_name AS reader_last_name,
+    r.first_name AS reader_first_name,
+    a.last_name AS author_last_name,
+    a.first_name AS author_first_name,
+    b.name_book AS book_title,
+    (CURRENT_DATE-i.date_return_expected) as overdue_days
+FROM public.issuance i
+JOIN public.reader r ON i.reader_id = r.id
+JOIN public.book_instance bi ON i.book_id = bi.id
+JOIN public.book b ON bi.book_information = b.id
+JOIN public.author a ON b.author = a.id
+WHERE i.date_return_fact IS null;
+
+SELECT * from public.overdue_books_view;
+\end{lstlisting}
+
+\begin{figure}[H] % Изменено с [ht] на [H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{25.png}
+    \caption{Результат представления overdue\_books\_view}
+    \label{fig:overdue_books_view_result}
+\end{figure}
+
+\subsection{Сценарий бронирования книги}
+\begin{lstlisting}[caption={Процедура бронирования книги}]
+CREATE OR REPLACE FUNCTION reserve_book(
+    p_reader_id INTEGER,
+    p_book_id INTEGER
+) RETURNS BOOLEAN AS $$
+DECLARE
+    v_available_instance_id INTEGER;
+    v_booking_count INTEGER;
+    v_reservation_end_date DATE;
+BEGIN
+ 
+    SELECT COUNT(*) INTO v_booking_count 
+    FROM public.booking 
+    WHERE number_reader_ticket = p_reader_id 
+    AND data_time + INTERVAL '3 days' > CURRENT_TIMESTAMP;
+    
+    IF v_booking_count >= 3 THEN
+        RAISE EXCEPTION 'Превышено максимальное количество активных бронирований';
+    END IF;
+    
+    SELECT bi.id INTO v_available_instance_id
+    FROM public.book_instance bi
+    WHERE bi.book_information = p_book_id 
+    AND bi.status = 'in stock'
+    AND bi.state >= 'satisfactory' 
+    LIMIT 1;
+    
+    IF v_available_instance_id IS NULL THEN
+        RAISE EXCEPTION 'Нет доступных экземпляров для бронирования';
+    END IF;
+    
+    v_reservation_end_date := CURRENT_DATE + INTERVAL '3 days';
+    
+    INSERT INTO public.booking (
+        number_reader_ticket, 
+        book_information, 
+        data_time,
+        min_state
+    ) VALUES (
+        p_reader_id, 
+        p_book_id, 
+        CURRENT_TIMESTAMP,
+        'satisfactory'
+    );
+    
+    UPDATE public.book_instance 
+    SET status = 'reserved' 
+    WHERE id = v_available_instance_id;
+    
+    RETURN TRUE;
+END;
+$$ LANGUAGE plpgsql;
+
+WITH available_books AS (
+    SELECT bi.id as instance_id, b.id as book_id, b.name_book
+    FROM book_instance bi
+    JOIN book b ON bi.book_information = b.id
+    WHERE bi.status = 'in stock'
+    LIMIT 3
+)
+SELECT * FROM available_books;
+\end{lstlisting}
+
+\begin{figure}[H] % Изменено с [ht] на [H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{26.png}
+    \caption{Результат работы функции reserve\_book}
+    \label{fig:reserve_book}
+\end{figure}
+
+\subsection{Сценарий отмены бронирования}
+\begin{lstlisting}[caption={Процедура отмены бронирования}]
+CREATE OR REPLACE FUNCTION cancel_reservation(
+    p_reader_id INTEGER,
+    p_book_id INTEGER
+) RETURNS BOOLEAN AS $$
+DECLARE
+    v_booking_id INTEGER;
+    v_instance_id INTEGER;
+BEGIN
+    SELECT b.id INTO v_booking_id
+    FROM public.booking b
+    WHERE b.number_reader_ticket = p_reader_id 
+    AND b.book_information = p_book_id
+    AND b.data_time + INTERVAL '3 days' > CURRENT_TIMESTAMP
+    LIMIT 1;
+    
+    IF v_booking_id IS NULL THEN
+        RAISE EXCEPTION 'Активное бронирование не найдено';
+    END IF;
+    
+    SELECT bi.id INTO v_instance_id
+    FROM public.book_instance bi
+    WHERE bi.book_information = p_book_id 
+    AND bi.status = 'reserved'
+    LIMIT 1;
+    
+    DELETE FROM public.booking WHERE id = v_booking_id;
+    
+    IF v_instance_id IS NOT NULL THEN
+        UPDATE public.book_instance 
+        SET status = 'in stock' 
+        WHERE id = v_instance_id;
+    END IF;
+    
+    RETURN TRUE;
+END;
+$$ LANGUAGE plpgsql;
+
+BEGIN;
+SELECT reserve_book(4, 5);  -- Создать
+SELECT cancel_reservation(4, 5);  -- Отменить
+SELECT * FROM booking WHERE number_reader_ticket = 4;  -- Проверить (должно быть пусто)
+SELECT * FROM book_instance WHERE book_information = 5; 
+\end{lstlisting}
+
+\begin{figure}[H] % Изменено с [ht] на [H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{27.png}
+    \caption{Результат работы функции cancel\_reservation - часть 1}
+    \label{fig:cancel_reservation1}
+\end{figure}
+
+\begin{figure}[H] % Изменено с [ht] на [H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{28.png}
+    \caption{Результат работы функции cancel\_reservation - часть 2}
+    \label{fig:cancel_reservation2}
+\end{figure}
+
+\begin{figure}[H] % Изменено с [ht] на [H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{29.png}
+    \caption{Результат работы функции cancel\_reservation - часть 3}
+    \label{fig:cancel_reservation3}
+\end{figure}
+
+\subsection{Модификация выдачи с проверкой бронирований}
+\begin{lstlisting}[caption={Проверка бронирований при выдаче}]
+CREATE OR REPLACE FUNCTION issue_book_safe(
+    p_reader_id INTEGER,
+    p_instance_id INTEGER
+) RETURNS BOOLEAN AS $$
+DECLARE
+    v_book_id INTEGER;
+    v_overdue_count INTEGER;
+    v_active_booking_count INTEGER;
+    v_book_status availability;
+BEGIN
+    SELECT book_information, status 
+    INTO v_book_id, v_book_status
+    FROM public.book_instance 
+    WHERE id = p_instance_id;
+    
+    IF v_book_id IS NULL THEN
+        RAISE EXCEPTION 'Экземпляр книги не найден';
+    END IF;
+    
+    SELECT COUNT(*) INTO v_overdue_count
+    FROM public.issuance i
+    WHERE i.reader_id = p_reader_id
+      AND i.date_return_fact IS NULL
+      AND i.date_return_expected < CURRENT_DATE;
+    
+    IF v_overdue_count > 0 THEN
+        RAISE EXCEPTION 'У читателя есть просроченные книги';
+    END IF;
+    
+    SELECT COUNT(*) INTO v_active_booking_count
+    FROM public.booking b
+    WHERE b.book_information = v_book_id
+      AND b.number_reader_ticket != p_reader_id
+      AND b.data_time + INTERVAL '3 days' > CURRENT_TIMESTAMP;
+    
+    IF v_active_booking_count > 0 THEN
+        RAISE EXCEPTION 'Книга забронирована другим читателем';
+    END IF;
+
+    IF v_book_status NOT IN ('in stock', 'reserved') THEN
+        RAISE EXCEPTION 'Книга недоступна для выдачи. Текущий статус: %', v_book_status;
+    END IF;
+    
+    INSERT INTO public.issuance (
+        reader_id, 
+        book_id, 
+        date_time,
+        date_return_expected,
+        date_return_fact
+    ) VALUES (
+        p_reader_id, 
+        p_instance_id, 
+        CURRENT_TIMESTAMP,
+        CURRENT_DATE + INTERVAL '14 days',
+        NULL
+    );
+    
+    UPDATE public.book_instance
+    SET status = 'issued'
+    WHERE id = p_instance_id;
+    
+    DELETE FROM public.booking
+    WHERE number_reader_ticket = p_reader_id
+    AND book_information = v_book_id;
+    
+    RETURN TRUE;
+END;
+$$ LANGUAGE plpgsql;
+
+SELECT issue_book_safe(4, 9);
+
+SELECT 'Проверка выдачи:' as результат;
+SELECT 
+    r.first_name as читатель,
+    b.name_book as книга,
+    i.date_time as дата_выдачи,
+    bi.status as статус_экземпляра
+FROM issuance i
+JOIN reader r ON i.reader_id = r.id
+JOIN book_instance bi ON i.book_id = bi.id
+JOIN book b ON bi.book_information = b.id;
+\end{lstlisting}
+
+\begin{figure}[H] % Изменено с [ht] на [H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{30.png}
+    \caption{Результат работы функции issue\_book\_safe}
+    \label{fig:issue_book_safe}
+\end{figure}
+
+\subsection{Функция поиска местоположений книги}
+\begin{lstlisting}[caption={Функция find\_book\_locations}]
+CREATE OR REPLACE FUNCTION get_book_locations(p_book_id INTEGER)
+RETURNS TABLE(
+    location VARCHAR,
+    book_state state,
+    instance_count BIGINT,
+    status availability
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT 
+        bi.location,
+        bi.state,
+        COUNT(*) as instance_count,
+        bi.status
+    FROM public.book_instance bi
+    WHERE bi.book_information = p_book_id
+    GROUP BY bi.location, bi.state, bi.status
+    ORDER BY 
+        CASE bi.state
+            WHEN 'excellent' THEN 1
+            WHEN 'good' THEN 2
+            WHEN 'satisfactory' THEN 3
+            WHEN 'dilapidated' THEN 4
+            WHEN 'lost' THEN 5
+            ELSE 6
+        END,
+        bi.location;
+END;
+$$ LANGUAGE plpgsql;
+
+SELECT * FROM get_book_locations(8);
+\end{lstlisting}
+
+\begin{figure}[H] % Изменено с [ht] на [H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{31.png}
+    \caption{Результат работы функции get\_book\_locations}
+    \label{fig:get_book_locations}
+\end{figure}
+
+\subsection{Представление доступных экземпляров}
+\begin{lstlisting}[caption={Представление available\_instances}]
+CREATE OR REPLACE VIEW public.available_books_view AS
+SELECT 
+    b.id as book_id,
+    b.name_book,
+    a.first_name as author_first_name,
+    a.last_name as author_last_name,
+    bi.state,
+    COUNT(*) as available_count
+FROM public.book b
+JOIN public.author a ON b.author = a.id
+JOIN public.book_instance bi ON bi.book_information = b.id
+WHERE bi.status = 'in stock'
+GROUP BY b.id, b.name_book, a.first_name, a.last_name, bi.state
+ORDER BY b.name_book, 
+    CASE bi.state
+        WHEN 'excellent' THEN 1
+        WHEN 'good' THEN 2
+        WHEN 'satisfactory' THEN 3
+        WHEN 'dilapidated' THEN 4
+        ELSE 5
+    END;
+
+SELECT * FROM public.available_books_view;
+\end{lstlisting}
+
+\begin{figure}[H] % Изменено с [ht] на [H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{32.png}
+    \caption{Результат представления available\_books\_view}
+    \label{fig:available_books_view}
+\end{figure}
+
+\subsection{Представление долгосрочных выдач}
+\begin{lstlisting}[caption={Представление long\_term\_issuances}]
+CREATE OR REPLACE VIEW public.overdue_books_year_view AS
+SELECT 
+    r.id as reader_id,
+    r.last_name AS reader_last_name,
+    r.first_name AS reader_first_name,
+    a.last_name AS author_last_name,
+    a.first_name AS author_first_name,
+    b.name_book AS book_title,
+    i.date_time AS issue_date,
+    i.date_return_expected,
+    (CURRENT_DATE - i.date_time::DATE) as days_issued
+FROM public.issuance i
+JOIN public.reader r ON i.reader_id = r.id
+JOIN public.book_instance bi ON i.book_id = bi.id
+JOIN public.book b ON bi.book_information = b.id
+JOIN public.author a ON b.author = a.id
+WHERE i.date_return_fact IS NULL
+AND i.date_time < CURRENT_DATE - INTERVAL '1 year'
+ORDER BY i.date_time;
+
+SELECT * FROM public.overdue_books_year_view;
+\end{lstlisting}
+
+\begin{figure}[H] % Изменено с [ht] на [H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{33.png}
+    \caption{Результат представления overdue\_books\_year\_view}
+    \label{fig:overdue_books_year_view}
+\end{figure}
+
+\subsection{Создание таблицы логов}
+\begin{lstlisting}[caption={Создание таблицы logs}]
+CREATE TABLE public.logs (
+    id SERIAL PRIMARY KEY,
+    log_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    table_name VARCHAR(100) NOT NULL,
+    log_content TEXT NOT NULL
+);
+\end{lstlisting}
+
+\begin{figure}[H] % Изменено с [ht] на [H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{34.png}
+    \caption{Результат создания таблицы logs}
+    \label{fig:logs_table}
+\end{figure}
+
+\subsection{Реализация триггеров для логгирования}
+\begin{lstlisting}[caption={Триггеры для автоматического логгирования}]
+CREATE OR REPLACE FUNCTION log_changes()
+RETURNS TRIGGER AS $$
+DECLARE
+    v_operation TEXT;
+    v_content TEXT;
+BEGIN
+    IF TG_OP = 'INSERT' THEN
+        v_operation := 'INSERT';
+        v_content := 'Добавлена запись: ' || row_to_json(NEW);
+    ELSIF TG_OP = 'UPDATE' THEN
+        v_operation := 'UPDATE';
+        v_content := 'Изменена запись. Старые данные: ' || row_to_json(OLD) || 
+                    ' Новые данные: ' || row_to_json(NEW);
+    ELSIF TG_OP = 'DELETE' THEN
+        v_operation := 'DELETE';
+        v_content := 'Удалена запись: ' || row_to_json(OLD);
+    END IF;
+    
+    INSERT INTO public.logs (table_name, log_content)
+    VALUES (TG_TABLE_NAME, v_operation || ' - ' || v_content);
+    
+    IF TG_OP = 'DELETE' THEN
+        RETURN OLD;
+    ELSE
+        RETURN NEW;
+    END IF;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_log_author
+    AFTER INSERT OR UPDATE OR DELETE ON public.author
+    FOR EACH ROW EXECUTE FUNCTION log_changes();
+
+CREATE TRIGGER trg_log_book
+    AFTER INSERT OR UPDATE OR DELETE ON public.book
+    FOR EACH ROW EXECUTE FUNCTION log_changes();
+
+CREATE TRIGGER trg_log_reader
+    AFTER INSERT OR UPDATE OR DELETE ON public.reader
+    FOR EACH ROW EXECUTE FUNCTION log_changes();
+
+CREATE TRIGGER trg_log_book_instance
+    AFTER INSERT OR UPDATE OR DELETE ON public.book_instance
+    FOR EACH ROW EXECUTE FUNCTION log_changes();
+
+CREATE TRIGGER trg_log_issuance
+    AFTER INSERT OR UPDATE OR DELETE ON public.issuance
+    FOR EACH ROW EXECUTE FUNCTION log_changes();
+
+CREATE TRIGGER trg_log_booking
+    AFTER INSERT OR UPDATE OR DELETE ON public.booking
+    FOR EACH ROW EXECUTE FUNCTION log_changes();
+
+-- Бронирование книги
+SELECT reserve_book(4, 9);
+
+-- Отмена бронирования
+SELECT cancel_reservation(4, 1);
+
+-- Выдача книги
+SELECT issue_book(4, 1);
+
+-- Получение информации о местоположениях книги
+SELECT * FROM get_book_locations(8);
+
+-- Просмотр доступных книг
+SELECT * FROM available_books_view;
+
+-- Просмотр долгосрочных просрочек
+SELECT * FROM overdue_books_year_view;
+
+-- Просмотр логов
+SELECT * FROM logs ORDER BY log_date DESC;
+\end{lstlisting}
+
+\begin{figure}[H] % Изменено с [ht] на [H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{35.png}
+    \caption{Результат создания триггеров - часть 1}
+    \label{fig:triggers1}
+\end{figure}
+
+\begin{figure}[H] % Изменено с [ht] на [H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{36.png}
+    \caption{Результат создания триггеров - часть 2}
+    \label{fig:triggers2}
+\end{figure}
+
+\begin{figure}[H] % Изменено с [ht] на [H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{37.png}
+    \caption{Результат создания триггеров - часть 3}
+    \label{fig:triggers3}
+\end{figure}
+
+\begin{figure}[H] % Изменено с [ht] на [H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{38.png}
+    \caption{Результат создания триггеров - часть 4}
+    \label{fig:triggers4}
+\end{figure}
+
+\begin{figure}[H] % Изменено с [ht] на [H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{39.png}
+    \caption{Результат создания триггеров - часть 5}
+    \label{fig:triggers5}
+\end{figure}
+
+\begin{figure}[H] % Изменено с [ht] на [H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{40.png}
+    \caption{Результат создания триггеров - часть 6}
+    \label{fig:triggers6}
+\end{figure}
+
+\begin{figure}[H] % Изменено с [ht] на [H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{41.png}
+    \caption{Результат создания триггеров - часть 7}
+    \label{fig:triggers7}
+\end{figure}
+
+\section{Заключение}
+В результате выполнения курсовой работы была создана полнофункциональная система управления библиотекой, демонстрирующая практическое применение знаний в области проектирования баз данных, SQL-программирования и разработки бизнес-логики. Система соответствует современным требованиям к информационным системам и может служить основой для дальнейшего развития и внедрения в реальные библиотечные процессы. Работа подтвердила важность правильного проектирования структуры базы данных и эффективного использования возможностей СУБД для создания надежных и производительных информационных систем.
+\section{Список использованных источников}
+\begin{enumerate}
+    \item Грофф Дж., Вайнберг П. SQL: полное руководство. – 3-е изд. – М.: Вильямс, 2019. – 960 с.
+    \item PostgreSQL: мощь открытых СУБД / Под ред. О. В. Самойленко. – СПб.: БХВ-Петербург, 2020. – 576 с.
+    \item Таненбаум Э., ван Стеен М. Распределенные системы. Принципы и парадигмы. – 2-е изд. – СПб.: Питер, 2021. – 1104 с.
+    \item Базы данных: проектирование, реализация, сопровождение. Теория и практика / К. Дж. Дейт. – М.: Вильямс, 2022. – 1440 с.
+    \item SQL и реляционная теория. Как грамотно писать код на SQL / К. Дж. Дейт. – М.: Символ-Плюс, 2018. – 480 с.
+\end{enumerate}
+
+\end{document}

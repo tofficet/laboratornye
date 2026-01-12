@@ -1,0 +1,33 @@
+\babel@toc {russian}{}\relax 
+\contentsline {section}{\numberline {1}Введение}{4}{section.1}%
+\contentsline {section}{\numberline {2}Техническое задание}{4}{section.2}%
+\contentsline {section}{\numberline {3}Проектирование базы данных}{4}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Создание базы данных}{4}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}Создание таблицы author}{5}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.3}Создание таблицы publishing\_house}{5}{subsection.3.3}%
+\contentsline {subsection}{\numberline {3.4}Создание таблицы book}{5}{subsection.3.4}%
+\contentsline {subsection}{\numberline {3.5}Создание таблицы reader}{6}{subsection.3.5}%
+\contentsline {subsection}{\numberline {3.6}Создание таблицы book\_instance}{6}{subsection.3.6}%
+\contentsline {subsection}{\numberline {3.7}Создание таблицы issuance}{6}{subsection.3.7}%
+\contentsline {subsection}{\numberline {3.8}Создание таблицы booking}{7}{subsection.3.8}%
+\contentsline {section}{\numberline {4}Реализация бизнес-логики}{7}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Управление авторами (CRUD операции)}{7}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}Управление издательствами}{9}{subsection.4.2}%
+\contentsline {subsection}{\numberline {4.3}Управление информацией о книгах}{11}{subsection.4.3}%
+\contentsline {subsection}{\numberline {4.4}Управление читателями}{13}{subsection.4.4}%
+\contentsline {subsection}{\numberline {4.5}Управление экземплярами книг}{14}{subsection.4.5}%
+\contentsline {subsection}{\numberline {4.6}Сценарий выдачи книги}{15}{subsection.4.6}%
+\contentsline {subsection}{\numberline {4.7}Сценарий возврата книги}{16}{subsection.4.7}%
+\contentsline {subsection}{\numberline {4.8}Представление выданных книг}{17}{subsection.4.8}%
+\contentsline {subsection}{\numberline {4.9}Представление просроченных выдач}{17}{subsection.4.9}%
+\contentsline {subsection}{\numberline {4.10}Модификация выдачи с проверкой просрочек}{18}{subsection.4.10}%
+\contentsline {subsection}{\numberline {4.11}Сценарий бронирования книги}{19}{subsection.4.11}%
+\contentsline {subsection}{\numberline {4.12}Сценарий отмены бронирования}{20}{subsection.4.12}%
+\contentsline {subsection}{\numberline {4.13}Модификация выдачи с проверкой бронирований}{22}{subsection.4.13}%
+\contentsline {subsection}{\numberline {4.14}Функция поиска местоположений книги}{24}{subsection.4.14}%
+\contentsline {subsection}{\numberline {4.15}Представление доступных экземпляров}{24}{subsection.4.15}%
+\contentsline {subsection}{\numberline {4.16}Представление долгосрочных выдач}{25}{subsection.4.16}%
+\contentsline {subsection}{\numberline {4.17}Создание таблицы логов}{26}{subsection.4.17}%
+\contentsline {subsection}{\numberline {4.18}Реализация триггеров для логгирования}{27}{subsection.4.18}%
+\contentsline {section}{\numberline {5}Заключение}{30}{section.5}%
+\contentsline {section}{\numberline {6}Список использованных источников}{31}{section.6}%
