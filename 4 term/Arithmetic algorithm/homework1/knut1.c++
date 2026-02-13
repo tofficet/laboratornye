@@ -6,9 +6,9 @@
 double evaluateOddPolynomial(const std::vector<double>& coeffs, double x) {
     if (coeffs.empty()) return 0.0;
     
-    int n = coeffs.size() - 1;        // степень полинома от t = x²
+    int n = coeffs.size() - 1;       
     double t = x * x;                
-    double result = coeffs[n];        // начинаем с u_{2n+1}
+    double result = coeffs[n];    
     
     for (int i = n - 1; i >= 0; --i) {
         result = result * t + coeffs[i];
@@ -50,8 +50,7 @@ void printPolynomial(const std::vector<double>& coeffs) {
 
 int main() {
     std::cout << "ВЫЧИСЛЕНИЕ НЕЧЁТНОГО ПОЛИНОМА (СХЕМА ГОРНЕРА ДЛЯ X²)\n\n";
-    
-    // Пример: 2x⁷ - 3x⁵ + 5x³ - 7x
+
     std::vector<double> coeffs = {-7.0, 5.0, -3.0, 2.0};
     
     printPolynomial(coeffs);
@@ -61,24 +60,6 @@ int main() {
     
     std::cout << "x = " << x << "\n";
     std::cout << "u(x) = " << result << "\n\n";
-    
-    // Детали вычислений
-    std::cout << "Детали:\n";
-    std::cout << "t = x² = " << x * x << "\n";
-    
-    double t = x * x;
-    double step = coeffs[3];
-    std::cout << "b₂ = " << step << "\n";
-    
-    step = step * t + coeffs[2];
-    std::cout << "b₁ = " << step << "\n";
-    
-    step = step * t + coeffs[1];
-    std::cout << "b₀ = " << step << "\n";
-    
-    step = step * t + coeffs[0];
-    std::cout << "P(t) = " << step << "\n";
-    std::cout << "u(x) = x·P(t) = " << x * step << "\n";
-    
+
     return 0;
 }
