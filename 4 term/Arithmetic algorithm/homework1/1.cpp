@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <cmath>
+#include <iomanip>
 
 using namespace std;
 
@@ -143,33 +144,97 @@ bool checkLinearSpan(const vector<double>& f, const vector<vector<double>>& g, v
     }
 }
 
-int main() {
-    vector<double> f = {1, 2, 1};
-    vector<double> g1 = {1, 1};
-    vector<double> g2 = {-1, 0, 1};
-    vector<vector<double>> basis = {g1, g2};
+vector<double> inputPolynomial(const string& name) {
+    int degree;
+    cout << "Введите степень полинома " << name << ": ";
+    cin >> degree;
     
-    cout << "f(x) = x^2 + 2x + 1" << endl;
-    cout << "g1(x) = x + 1" << endl;
-    cout << "g2(x) = x^2 - 1" << endl << endl;
+    vector<double> coeffs(degree + 1, 0.0);
+    cout << "Введите коэффициенты от младшей степени к старшей (a0, a1, ..., a" << degree << "):" << endl;
+    for (int i = 0; i <= degree; i++) {
+        cout << "  a" << i << " = ";
+        cin >> coeffs[i];
+    }
+    
+    return coeffs;
+}
+
+int main() {
+    cout << "==========================================================" << endl;
+    cout << "ПРОВЕРКА ПРИНАДЛЕЖНОСТИ ПОЛИНОМА ЛИНЕЙНОЙ ОБОЛОЧКЕ" << endl;
+    cout << "==========================================================" << endl;
+    cout << "Программа проверяет, можно ли представить полином f(x)" << endl;
+    cout << "как линейную комбинацию полиномов g1(x), g2(x), ..., gn(x)" << endl;
+    cout << "----------------------------------------------------------" << endl;
+    
+    int choice;
+    cout << "Выберите режим работы:" << endl;
+    cout << "1 - Использовать тестовый пример (x^2 + 2x + 1 и базис {x+1, x^2-1})" << endl;
+    cout << "2 - Ввести свои данные" << endl;
+    cout << "Ваш выбор: ";
+    cin >> choice;
+    
+    vector<double> f;
+    vector<vector<double>> basis;
+    
+    if (choice == 1) {
+        f = {1, 2, 1};  // x^2 + 2x + 1
+        vector<double> g1 = {1, 1};  // x + 1
+        vector<double> g2 = {-1, 0, 1};  // x^2 - 1
+        basis = {g1, g2};
+        
+        cout << "\n--- ТЕСТОВЫЙ ПРИМЕР ---" << endl;
+        printPolynomial(f, "f");
+        cout << "Базисные полиномы:" << endl;
+        printPolynomial(g1, "g1");
+        printPolynomial(g2, "g2");
+    } else {
+        cout << "\n--- ВВОД ДАННЫХ ---" << endl;
+    
+        f = inputPolynomial("f");
+        
+        int basisSize;
+        cout << "\nВведите количество базисных полиномов: ";
+        cin >> basisSize;
+        
+        basis.clear();
+        for (int i = 0; i < basisSize; i++) {
+            cout << "\nПолином g" << i + 1 << ":" << endl;
+            vector<double> g = inputPolynomial("g" + to_string(i + 1));
+            basis.push_back(g);
+        }
+        
+        cout << "\n--- ВВЕДЁННЫЕ ДАННЫЕ ---" << endl;
+        printPolynomial(f, "f");
+        cout << "Базисные полиномы:" << endl;
+        for (int i = 0; i < basis.size(); i++) {
+            printPolynomial(basis[i], "g" + to_string(i + 1));
+        }
+    }
+    
+    cout << "\n--- РЕЗУЛЬТАТ ---" << endl;
     
     vector<double> coeffs;
     if (checkLinearSpan(f, basis, coeffs)) {
-        cout << "f(x) принадлежит линейной оболочке" << endl;
+        cout << "✓ f(x) ПРИНАДЛЕЖИТ линейной оболочке <g1, g2, ..., gn>" << endl;
+        cout << "\nРазложение f(x) по базису:" << endl;
         cout << "f(x) = ";
         bool first = true;
         for (int i = 0; i < coeffs.size(); i++) {
             if (abs(coeffs[i]) < 1e-8) continue;
+            
             if (!first && coeffs[i] > 0) cout << " + ";
             else if (!first && coeffs[i] < 0) cout << " - ";
             else if (coeffs[i] < 0) cout << "-";
-            cout << abs(coeffs[i]) << "*g" << i + 1 << "(x)";
+            
+            cout << abs(coeffs[i]) << " * g" << i + 1 << "(x)";
             first = false;
         }
         cout << endl;
+        
     } else {
-        cout << "f(x) НЕ принадлежит линейной оболочке" << endl;
+        cout << "✗ f(x) НЕ ПРИНАДЛЕЖИТ линейной оболочке <g1, g2, ..., gn>" << endl;
+        cout << "Невозможно представить f(x) как линейную комбинацию заданных полиномов." << endl;
     }
-    
     return 0;
 }
