@@ -52,137 +52,52 @@ void printPolynomial(const Polynomial& p, const string& name) {
     cout << endl;
 }
 
-double limitPoint(Polynomial& f, Polynomial& g, double a) {
+double limitPoint(Polynomial f, Polynomial g, double a) {
     double fv = f.eval(a), gv = g.eval(a);
     //gv знаменатель
-    if (abs(gv) > 1e-10) return fv / gv;   
+    if (abs(gv) > 1e-10) return fv / gv;
     if (abs(fv) > 1e-10) return (fv > 0 ? 1 : -1) * INFINITY;
     
-    while (abs(f.eval(a)) < 1e-10 && abs(g.eval(a)) < 1e-10 && f.deg() >= 0 && g.deg() >= 0) {
-        for (int i = 0; i < f.deg(); i++) f.coeffs[i] = (i + 1) * f.coeffs[i + 1];
-        f.coeffs.pop_back();
-        for (int i = 0; i < g.deg(); i++) g.coeffs[i] = (i + 1) * g.coeffs[i + 1];
-        g.coeffs.pop_back();
+    int mult_f = 0, mult_g = 0;
+    Polynomial temp_f = f, temp_g = g;
+    
+    while (abs(temp_f.eval(a)) < 1e-10 && temp_f.deg() >= 0) {
+        mult_f++;
+        std::vector<double> new_coeffs(temp_f.deg());
+        double prev = 0;
+        for (int i = temp_f.deg(); i > 0; i--) {
+            new_coeffs[i-1] = temp_f.coeffs[i] + prev * a;
+            prev = new_coeffs[i-1];
+        }
+        temp_f.coeffs = new_coeffs;
     }
 
+    while (abs(temp_g.eval(a)) < 1e-10 && temp_g.deg() >= 0) {
+        mult_g++;
+        std::vector<double> new_coeffs(temp_g.deg());
+        double prev = 0;
+        for (int i = temp_g.deg(); i > 0; i--) {
+            new_coeffs[i-1] = temp_g.coeffs[i] + prev * a;
+            prev = new_coeffs[i-1];
+        }
+        temp_g.coeffs = new_coeffs;
+    }
+    
+    int k = std::min(mult_f, mult_g);
+    mult_f -= k;
+    mult_g -= k;
+    
+    if (mult_f > mult_g) {
+        return 0;  
+    } else if (mult_f == mult_g) {
+        double new_fv = temp_f.eval(a); 
+        double new_gv = temp_g.eval(a); 
+        return new_fv / new_gv;
+    } else {
+        double new_fv = temp_f.eval(a);
+        return (new_fv > 0 ? 1 : -1) * INFINITY;
 }
-
-vector<double> taylorExpansion(const vector<double>& f, double a) {
-    int n = f.size() - 1;
-    vector<double> result(n + 1, 0.0);
-    
-    vector<double> temp = f;
-    
-    for (int k = 0; k <= n; k++) {
-        result[k] = temp[0];
-        
-        for (int i = 0; i < n - k; i++) {
-            temp[i] = temp[i + 1] + (i + 1) * a * temp[i + 1];
-        }
-        temp.pop_back();
-    }
-    
-    return result;
 }
-
-
-#include <vector>
-#include <cmath>
-#include <algorithm>
-using namespace std;
-
-class Polynomial {
-public:
-    vector<double> coeffs;
-    
-    Polynomial(const vector<double>& c) : coeffs(c) {}
-    
-    double eval(double x) const {
-        double result = 0;
-        for (int i = coeffs.size() - 1; i >= 0; i--) {
-            result = result * x + coeffs[i];
-        }
-        return result;
-    }
-    
-    int deg() const {
-        return coeffs.size() - 1;
-    }
-};
-
-
-vector<double> taylorExpansion(const vector<double>& f, double a) {
-    int n = f.size() - 1;
-    vector<double> result(n + 1, 0.0);
-    vector<double> temp = f;
-    
-    for (int k = 0; k <= n; k++) {
-        result[k] = temp[0];
-        
-        for (int i = 0; i < n - k; i++) {
-            temp[i] = temp[i + 1] * (i + 1) + a * temp[i + 1] * (i + 1);
-        }
-        temp.pop_back();
-    }
-    
-    double fact = 1.0;
-    for (int k = 1; k <= n; k++) {
-        fact *= k;
-        result[k] /= fact;
-    }
-    
-    return result;
-}
-
-double limitPoint(Polynomial& f, Polynomial& g, double a) {
-    double fv = f.eval(a);
-    double gv = g.eval(a);
-
-    if (abs(gv) > 1e-10) {
-        return fv / gv;
-    }
-    if (abs(fv) > 1e-10) {
-        return (fv > 0 ? 1.0 : -1.0) * INFINITY;
-    }
-
-    vector<double> fTaylor = taylorExpansion(f.coeffs, a);
-    vector<double> gTaylor = taylorExpansion(g.coeffs, a);
-    
-    int fOrder = -1;
-    for (int i = 0; i < fTaylor.size(); i++) {
-        if (abs(fTaylor[i]) > 1e-10) {
-            fOrder = i;
-            break;
-        }
-    }
-
-    int gOrder = -1;
-    for (int i = 0; i < gTaylor.size(); i++) {
-        if (abs(gTaylor[i]) > 1e-10) {
-            gOrder = i;
-            break;
-        }
-    }
-    
-    if (fOrder == -1 && gOrder == -1) {
-        return 0.0;  
-    }
-    
-    if (fOrder == -1) fOrder = fTaylor.size(); 
-    if (gOrder == -1) gOrder = gTaylor.size(); 
-    
-    if (fOrder < gOrder) {
-        return 0.0;
-    }
-    else if (fOrder > gOrder) {
-        double sign = (fTaylor[fOrder] * gTaylor[gOrder] > 0) ? 1.0 : -1.0;
-        return sign * INFINITY;
-    }
-    else {
-        return fTaylor[fOrder] / gTaylor[gOrder];
-    }
-}
-
 
 double limitInf(Polynomial& f, Polynomial& g, bool pos) {
     int fd = f.deg(), gd = g.deg();
