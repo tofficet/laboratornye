@@ -113,28 +113,6 @@ vector<double> inputPolynomial(const string& name) {
     return coeffs;
 }
 
-void verifyExpansion(const vector<double>& original, const vector<double>& expanded, double a, double x_test) {
-    double orig_val = 0;
-    double x_pow = 1;
-    for (int i = 0; i < original.size(); i++) {
-        orig_val += original[i] * x_pow;
-        x_pow *= x_test;
-    }
-    
-    double exp_val = 0;
-    double x_minus_a = x_test - a;
-    double pow_x_minus_a = 1;
-    for (int i = 0; i < expanded.size(); i++) {
-        exp_val += expanded[i] * pow_x_minus_a;
-        pow_x_minus_a *= x_minus_a;
-    }
-    
-    cout << "\nПроверка при x = " << x_test << ":" << endl;
-    cout << "  Исходный полином: f(" << x_test << ") = " << orig_val << endl;
-    cout << "  Разложение:       f(" << x_test << ") = " << exp_val << endl;
-    cout << "  Разница: " << abs(orig_val - exp_val) << " (должна быть близка к 0)" << endl;
-}
-
 int main() {
     cout << "==========================================================" << endl;
     cout << "РАЗЛОЖЕНИЕ МНОГОЧЛЕНА ПО СТЕПЕНЯМ (x - a)^k" << endl;

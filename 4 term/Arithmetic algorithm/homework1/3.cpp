@@ -77,6 +77,10 @@ void printShiftedForm(const vector<double>& coeffs, double shift, const string& 
     }
 }
 
+//Ключевая идея: (x - a) и (x - b) связаны соотношением:
+//(x - a) = (x - b) + (b - a)
+//Если обозначить shift = b - a, то:
+//x - a) = (x - b) + shift
 vector<double> taylorFromShifted(const vector<double>& f, double a, double b) {
     int n = f.size() - 1;
     vector<double> result(n + 1, 0.0);
@@ -130,7 +134,7 @@ int main() {
     double a, B;
     
     if (choice == 1) {
-        // Тестовый пример: f(x) = 4 + 3(x-1) + 1(x-1)^2
+        // f(x) = 4 + 3(x-1) + 1(x-1)^2
         f = {4, 3, 1};
         a = 1.0;
         B = 2.0;
@@ -143,7 +147,6 @@ int main() {
     } else {
         cout << "\n--- ВВОД ДАННЫХ ---" << endl;
         
-        // Ввод коэффициентов исходного разложения по (x - a)
         int k;
         cout << "Введите степень разложения (максимальная степень (x - a)^k): ";
         cin >> k;
@@ -177,15 +180,6 @@ int main() {
     cout << "f(x) = ";
     printShiftedForm(result, B);
     cout << endl;
-    
-    cout << "\n--- КОЭФФИЦИЕНТЫ НОВОГО РАЗЛОЖЕНИЯ ---" << endl;
-    cout << "----------------------------------------------------------" << endl;
-    for (int j = 0; j < result.size(); j++) {
-        cout << "  (x - " << B << ")^" << j << ": " << result[j] << endl;
-    }
-    cout << "----------------------------------------------------------" << endl;
-    
-    cout << "\nПрограмма завершена." << endl;
     
     return 0;
 }
