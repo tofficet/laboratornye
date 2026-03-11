@@ -1,4 +1,4 @@
-#include "mainwindow.h"
+#include "../include/mainwindow.h"
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QGroupBox>
@@ -18,7 +18,6 @@ MainWindow::MainWindow(QWidget *parent)
     setupConnections();
     logMessage("Application started");
 }
-
 MainWindow::~MainWindow() {}
 
 void MainWindow::setupUI() {

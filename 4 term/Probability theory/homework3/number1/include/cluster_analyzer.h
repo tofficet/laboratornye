@@ -4,7 +4,6 @@
 #include <string>
 #include <vector>
 #include <random>
-#include <functional>
 #include <stdexcept>
 
 class ClusterAnalyzer {

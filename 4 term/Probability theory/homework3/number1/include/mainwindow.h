@@ -1,14 +1,14 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QMainWindow>
-#include <QTableWidget>
-#include <QTextEdit>
-#include <QLineEdit>
-#include <QComboBox>
-#include <QSpinBox>
-#include <QPushButton>
-#include <QLabel>
+#include <QtWidgets/QMainWindow>
+#include <QtWidgets/QTableWidget>
+#include <QtWidgets/QTextEdit>
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QComboBox>
+#include <QtWidgets/QSpinBox>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QLabel>
 #include <vector>
 #include <memory>
 
@@ -19,7 +19,7 @@ class MainWindow : public QMainWindow {
 
 public:
     MainWindow(QWidget *parent = nullptr);
-    ~MainWindow();
+    virtual ~MainWindow();
 
 private slots:
     void onGenerateClicked();

@@ -1,8 +1,8 @@
-#include "tree_model.h"
 #include <cmath>
 #include <queue>
 #include <algorithm>
 #include <QDebug>
+#include "tree_model.h"
 
 TreeModel::TreeModel(int branchingFactor, int depth,
                      const std::vector<double>& levelStopProbabilities,
@@ -13,7 +13,6 @@ TreeModel::TreeModel(int branchingFactor, int depth,
       rng(std::random_device{}()),
       lastPathLength(0) {
     
-    // Проверка входных данных
     if (stopProbs.size() != static_cast<size_t>(depth + 1)) {
         throw std::invalid_argument("Количество вероятностей остановки должно быть равно глубине + 1");
     }
@@ -27,7 +26,6 @@ TreeModel::TreeModel(int branchingFactor, int depth,
             throw std::invalid_argument("На каждом уровне должно быть M вероятностей перемещения");
         }
         
-        // Проверка суммы вероятностей (должна быть 1)
         double sum = 0.0;
         for (double p : moveProbs[level]) {
             if (p < 0 || p > 1) {
@@ -54,7 +52,6 @@ void TreeModel::buildTree() {
     
     nodes.resize(totalNodes);
     
-    // Создаём узлы уровня за уровнем
     int nodeIndex = 0;
     for (int level = 0; level <= H; ++level) {
         int nodesAtLevel = static_cast<int>(pow(M, level));
@@ -66,14 +63,12 @@ void TreeModel::buildTree() {
             node.stopProbability = stopProbs[level];
             node.moveProbabilities = moveProbs[level];
             
-            // Добавляем детей (кроме листьев)
             if (level < H) {
                 for (int child = 0; child < M; ++child) {
-                    int childId = nodeIndex + nodesAtLevel + i * M + child;
+                    int childId = nodeIndex + nodesAtLevel + i * (M - 1) + child;
                     node.children.push_back(childId);
                 }
             } else {
-                // Это лист
                 leafIds.push_back(nodeIndex);
             }
             
@@ -92,7 +87,6 @@ QString TreeModel::nodeIdToName(int id) const {
         return "Root";
     }
     
-    // Находим позицию узла среди узлов своего уровня
     int nodesBeforeLevel = 0;
     for (int l = 0; l < node.level; ++l) {
         nodesBeforeLevel += static_cast<int>(pow(M, l));
@@ -106,10 +100,9 @@ int TreeModel::getNextNode(int currentNode, double randomValue) {
     const TreeNode& node = nodes[currentNode];
     
     if (node.children.empty()) {
-        return currentNode; // лист
+        return currentNode; 
     }
-    
-    // Выбираем ребёнка на основе вероятностей
+
     double cumulative = 0.0;
     for (size_t i = 0; i < node.moveProbabilities.size(); ++i) {
         cumulative += node.moveProbabilities[i];
@@ -117,8 +110,7 @@ int TreeModel::getNextNode(int currentNode, double randomValue) {
             return node.children[i];
         }
     }
-    
-    // На случай ошибок округления
+
     return node.children.back();
 }
 
@@ -131,37 +123,32 @@ std::vector<PathPoint> TreeModel::runSimulation() {
     std::vector<PathPoint> path;
     lastPath.clear();
     
-    int currentNode = 0; // начинаем с корня
+    int currentNode = 0; 
     lastPath.push_back(currentNode);
-    
-    // Добавляем корень в путь
+
     path.push_back(PathPoint(currentNode, nodes[currentNode].level, 
                              nodeIdToName(currentNode), Qt::blue));
     
     std::uniform_real_distribution<double> dist(0.0, 1.0);
     
     while (true) {
-        // Проверяем, не лист ли это
         if (nodes[currentNode].children.empty()) {
-            break; // дошли до листа
+            break;
         }
-        
-        // Проверяем, не останавливается ли точка
+
         double stopRand = dist(rng);
         if (shouldStop(currentNode, stopRand)) {
-            // Точка останавливается в этом узле
-            path.back().color = Qt::red; // помечаем последний узел красным
+            
+            path.back().color = Qt::red;
             break;
         }
         
-        // Выбираем следующий узел
         double moveRand = dist(rng);
         int nextNode = getNextNode(currentNode, moveRand);
         
         currentNode = nextNode;
         lastPath.push_back(currentNode);
         
-        // Добавляем узел в путь
         path.push_back(PathPoint(currentNode, nodes[currentNode].level,
                                  nodeIdToName(currentNode), 
                                  nodes[currentNode].children.empty() ? Qt::green : Qt::blue));

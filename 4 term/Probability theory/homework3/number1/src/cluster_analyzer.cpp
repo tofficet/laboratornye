@@ -1,4 +1,4 @@
-#include "cluster_analyzer.h"
+#include "../include/cluster_analyzer.h"
 #include <algorithm>
 #include <iostream>
 #include <cmath>

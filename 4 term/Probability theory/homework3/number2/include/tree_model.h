@@ -4,7 +4,7 @@
 #include <vector>
 #include <random>
 #include <memory>
-#include <QString>
+#include <QtCore/QString>
 #include <QColor>
 
 struct TreeNode {

@@ -1,4 +1,4 @@
-#include "mainwindow.h"
+#include "../include/mainwindow.h"
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QGroupBox>
@@ -7,7 +7,6 @@
 #include <QMessageBox>
 #include <QDateTime>
 #include <cmath>
-#include <QTabWidget>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent) {
@@ -47,41 +46,14 @@ void MainWindow::setupUI() {
     leftLayout->addWidget(treeGroup);
     
     QGroupBox* probGroup = new QGroupBox("Параметры вероятностей");
-    QVBoxLayout* probLayout = new QVBoxLayout(probGroup);
+    QFormLayout* probLayout = new QFormLayout(probGroup);
     
-    QHBoxLayout* levelLayout = new QHBoxLayout();
-    levelLayout->addWidget(new QLabel("Уровень:"));
-    levelSpin = new QSpinBox();
-    levelSpin->setRange(0, depthSpin->value());
-    levelSpin->setValue(0);
-    levelLayout->addWidget(levelSpin);
-    levelLayout->addStretch();
-    probLayout->addLayout(levelLayout);
-    
-    QHBoxLayout* stopLayout = new QHBoxLayout();
-    stopLayout->addWidget(new QLabel("Вероятность остановки p:"));
     stopProbSpin = new QDoubleSpinBox();
     stopProbSpin->setRange(0.0, 1.0);
     stopProbSpin->setSingleStep(0.05);
     stopProbSpin->setValue(0.1);
     stopProbSpin->setDecimals(3);
-    stopLayout->addWidget(stopProbSpin);
-    stopLayout->addStretch();
-    probLayout->addLayout(stopLayout);
-    
-    QHBoxLayout* distLayout = new QHBoxLayout();
-    distLayout->addWidget(new QLabel("Распределение:"));
-    distributionTypeCombo = new QComboBox();
-    distributionTypeCombo->addItem("Равномерное", 0);
-    distributionTypeCombo->addItem("Пользовательское", 1);
-    distLayout->addWidget(distributionTypeCombo);
-    distLayout->addStretch();
-    probLayout->addLayout(distLayout);
-    
-    probInputWidget = new QWidget();
-    QVBoxLayout* probInputLayout = new QVBoxLayout(probInputWidget);
-    probInputLayout->setContentsMargins(0, 0, 0, 0);
-    probLayout->addWidget(probInputWidget);
+    probLayout->addRow("Вероятность остановки p:", stopProbSpin);
     
     leftLayout->addWidget(probGroup);
     
@@ -144,87 +116,13 @@ void MainWindow::setupUI() {
     
     mainLayout->addWidget(leftPanel);
     mainLayout->addWidget(rightPanel, 1);
-    
-    updateProbabilityInputs(0);
 }
 
 void MainWindow::setupConnections() {
-    connect(branchingFactorSpin, QOverload<int>::of(&QSpinBox::valueChanged),
-            [this](int) { levelSpin->setRange(0, depthSpin->value()); });
-    
-    connect(depthSpin, QOverload<int>::of(&QSpinBox::valueChanged),
-            [this](int d) { levelSpin->setRange(0, d); });
-    
-    connect(levelSpin, QOverload<int>::of(&QSpinBox::valueChanged),
-            this, &MainWindow::onLevelChanged);
-    
-    connect(distributionTypeCombo, QOverload<int>::of(&QComboBox::currentIndexChanged),
-            this, &MainWindow::onDistributionTypeChanged);
-    
-    connect(generateTreeBtn, &QPushButton::clicked,
-            this, &MainWindow::onGenerateTreeClicked);
-    
-    connect(runExperimentBtn, &QPushButton::clicked,
-            this, &MainWindow::onRunExperimentClicked);
-    
-    connect(runMultipleBtn, &QPushButton::clicked,
-            this, &MainWindow::onRunMultipleExperimentsClicked);
-    
-    connect(clearLogBtn, &QPushButton::clicked,
-            this, &MainWindow::onClearLogClicked);
-}
-
-void MainWindow::updateProbabilityInputs(int level) {
-    for (auto* spin : moveProbInputs) {
-        delete spin;
-    }
-    moveProbInputs.clear();
-    
-    QLayout* layout = probInputWidget->layout();
-    while (layout->count()) {
-        delete layout->takeAt(0)->widget();
-    }
-    
-    int M = branchingFactorSpin->value();
-    
-    for (int i = 0; i < M; ++i) {
-        QHBoxLayout* rowLayout = new QHBoxLayout();
-        rowLayout->addWidget(new QLabel(QString("К потомку %1:").arg(i + 1)));
-        
-        QDoubleSpinBox* spin = new QDoubleSpinBox();
-        spin->setRange(0.0, 1.0);
-        spin->setSingleStep(0.05);
-        spin->setDecimals(3);
-        spin->setValue(1.0 / M);
-        spin->setEnabled(distributionTypeCombo->currentIndex() == 1);
-        
-        rowLayout->addWidget(spin);
-        rowLayout->addStretch();
-        
-        probInputWidget->layout()->addItem(rowLayout);
-        moveProbInputs.push_back(spin);
-    }
-}
-
-void MainWindow::onDistributionTypeChanged(int index) {
-    bool enabled = (index == 1);
-    for (auto* spin : moveProbInputs) {
-        spin->setEnabled(enabled);
-    }
-}
-
-void MainWindow::onLevelChanged(int level) {
-    if (levelMoveProbabilities.size() > static_cast<size_t>(level) &&
-        levelMoveProbabilities[level].size() == static_cast<size_t>(branchingFactorSpin->value())) {
-        
-        for (size_t i = 0; i < moveProbInputs.size(); ++i) {
-            moveProbInputs[i]->setValue(levelMoveProbabilities[level][i]);
-        }
-    }
-    
-    if (levelStopProbabilities.size() > static_cast<size_t>(level)) {
-        stopProbSpin->setValue(levelStopProbabilities[level]);
-    }
+    connect(generateTreeBtn, &QPushButton::clicked, this, &MainWindow::onGenerateTreeClicked);
+    connect(runExperimentBtn, &QPushButton::clicked, this, &MainWindow::onRunExperimentClicked);
+    connect(runMultipleBtn, &QPushButton::clicked, this, &MainWindow::onRunMultipleExperimentsClicked);
+    connect(clearLogBtn, &QPushButton::clicked, this, &MainWindow::onClearLogClicked);
 }
 
 void MainWindow::onGenerateTreeClicked() {
@@ -236,33 +134,17 @@ void MainWindow::onGenerateTreeClicked() {
         levelStopProbabilities.resize(totalLevels);
         levelMoveProbabilities.resize(totalLevels);
         
+        double p_stop = stopProbSpin->value();
         for (int lvl = 0; lvl < totalLevels; ++lvl) {
-            levelSpin->setValue(lvl);
-            
-            levelStopProbabilities[lvl] = stopProbSpin->value();
-            
+            levelStopProbabilities[lvl] = p_stop;
             levelMoveProbabilities[lvl].resize(M);
             for (int i = 0; i < M; ++i) {
-                levelMoveProbabilities[lvl][i] = moveProbInputs[i]->value();
-            }
-            
-            if (distributionTypeCombo->currentIndex() == 1) {
-                double sum = 0.0;
-                for (double p : levelMoveProbabilities[lvl]) {
-                    sum += p;
-                }
-                if (std::abs(sum - 1.0) > 1e-6) {
-                    throw std::invalid_argument(
-                        QString("На уровне %1 сумма вероятностей должна быть 1").arg(lvl).toStdString()
-                    );
-                }
+                levelMoveProbabilities[lvl][i] = 1.0 / M;
             }
         }
         
         model = std::make_unique<TreeModel>(M, H, levelStopProbabilities, levelMoveProbabilities);
-        
         drawTree();
-        
         logMessage("Дерево построено успешно");
         resultLabel->setText("Дерево построено. Запустите эксперименты.");
         
@@ -307,14 +189,9 @@ void MainWindow::drawTree() {
     
     for (const auto& node : nodes) {
         QPointF from = positions[node.id];
-        
         for (int childId : node.children) {
             QPointF to = positions[childId];
-            
-            treeScene->addLine(
-                from.x(), from.y(), to.x(), to.y(),
-                QPen(Qt::gray, 1, Qt::DashLine)
-            );
+            treeScene->addLine(from.x(), from.y(), to.x(), to.y(), QPen(Qt::gray, 1, Qt::DashLine));
         }
     }
     
@@ -330,11 +207,9 @@ void MainWindow::drawTree() {
             color = Qt::lightGray;
         }
         
-        treeScene->addEllipse(
-            pos.x() - nodeRadius, pos.y() - nodeRadius,
-            nodeRadius * 2, nodeRadius * 2,
-            QPen(Qt::black), QBrush(color)
-        );
+        treeScene->addEllipse(pos.x() - nodeRadius, pos.y() - nodeRadius,
+                              nodeRadius * 2, nodeRadius * 2,
+                              QPen(Qt::black), QBrush(color));
         
         QString label;
         if (node.level == 0) {
@@ -348,9 +223,10 @@ void MainWindow::drawTree() {
             label = QString("L%1_%2").arg(node.level).arg(idx);
         }
         
-        QGraphicsTextItem* text = treeScene->addText(label);
-        text->setPos(pos.x() - 15, pos.y() - 25);
-        text->setScale(0.7);
+    QGraphicsTextItem* text = treeScene->addText(label);
+    QRectF rect = text->boundingRect();
+    text->setPos(pos.x() - rect.width()/2 + 7, pos.y() - rect.height()/2);
+    text->setScale(0.7);
     }
     
     treeView->fitInView(treeScene->itemsBoundingRect(), Qt::KeepAspectRatio);
@@ -358,12 +234,10 @@ void MainWindow::drawTree() {
 
 void MainWindow::drawPath(const std::vector<PathPoint>& path) {
     if (!model) return;
-    
     drawTree();
     
     for (size_t i = 0; i < path.size(); ++i) {
         const PathPoint& point = path[i];
-        
         QList<QGraphicsItem*> items = treeScene->items();
         for (QGraphicsItem* item : items) {
             if (item->type() == QGraphicsEllipseItem::Type) {
@@ -409,7 +283,6 @@ void MainWindow::onRunMultipleExperimentsClicked() {
     
     try {
         logMessage(QString("Запуск %1 экспериментов...").arg(count));
-        
         model->runMultipleSimulations(count);
         
         QString stats = model->getStatistics();
@@ -430,11 +303,8 @@ void MainWindow::onRunMultipleExperimentsClicked() {
             double prob = model->getProbabilityToLeaf(leafId);
             if (prob > 0) {
                 statsTable->insertRow(row);
-                statsTable->setItem(row, 0, 
-                    new QTableWidgetItem(QString("Вероятность попадания в лист %1")
-                        .arg(leafId)));
-                statsTable->setItem(row, 1, 
-                    new QTableWidgetItem(QString("%1%").arg(prob * 100, 0, 'f', 2)));
+                statsTable->setItem(row, 0, new QTableWidgetItem(QString("Вероятность попадания в лист %1").arg(leafId)));
+                statsTable->setItem(row, 1, new QTableWidgetItem(QString("%1%").arg(prob * 100, 0, 'f', 2)));
                 row++;
             }
         }
@@ -448,13 +318,13 @@ void MainWindow::onRunMultipleExperimentsClicked() {
 
 void MainWindow::onClearLogClicked() {
     logText->clear();
+    logMessage("Лог очищен");
 }
 
 void MainWindow::logMessage(const QString& msg, bool isError) {
     QString timestamp = QDateTime::currentDateTime().toString("hh:mm:ss");
     QString formatted = QString("[%1] %2").arg(timestamp).arg(msg);
     
-    QTextCharFormat format;
     if (isError) {
         logText->setTextColor(Qt::red);
     } else {
