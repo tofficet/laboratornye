@@ -1,3 +1,0 @@
-/Users/daniilmolcanov/laboratornye/4 term/Probability theory/homework3/number2/build/CMakeFiles/TreeSimulation.dir
-/Users/daniilmolcanov/laboratornye/4 term/Probability theory/homework3/number2/build/CMakeFiles/edit_cache.dir
-/Users/daniilmolcanov/laboratornye/4 term/Probability theory/homework3/number2/build/CMakeFiles/rebuild_cache.dir

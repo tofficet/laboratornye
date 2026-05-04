@@ -1,5 +1,5 @@
 #pragma once
-#include "..\hw_3\interfaces.h"
+#include "../homework3/interfaces.h"
 #include <algorithm>
 #include <stdexcept>
 #include <thread>

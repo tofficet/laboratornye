@@ -1,5 +1,5 @@
 #pragma once
-#include "..\hw_3\interfaces.h"
+#include "../homework3/interfaces.h"
 
 class Pkcs7Padding : public IPaddingMode {
 public:

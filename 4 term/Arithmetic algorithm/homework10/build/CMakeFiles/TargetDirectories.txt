@@ -1,0 +1,3 @@
+/Users/daniilmolcanov/laboratornye/4 term/Arithmetic algorithm/homework10/build/CMakeFiles/compute.dir
+/Users/daniilmolcanov/laboratornye/4 term/Arithmetic algorithm/homework10/build/CMakeFiles/edit_cache.dir
+/Users/daniilmolcanov/laboratornye/4 term/Arithmetic algorithm/homework10/build/CMakeFiles/rebuild_cache.dir

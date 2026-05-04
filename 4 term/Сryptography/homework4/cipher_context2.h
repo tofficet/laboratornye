@@ -1,7 +1,7 @@
 ﻿#pragma once
-#include "..\hw_3\interfaces.h"
-#include"..\hw_3\modes.h"
-#include"..\hw_3\padding.h"
+#include "../homework3/interfaces.h"
+#include"../homework3/modes.h"
+#include"../homework3/padding.h"
 
 #include "padding_ext.h"
 #include "modes_ext.h"
@@ -18,7 +18,6 @@
 
 enum class EncryptionMode2 
 {
-    //  из первой работы 
     ECB,
     CBC,
     PCBC,
@@ -31,7 +30,6 @@ enum class EncryptionMode2
 
 enum class PaddingMode2 
 {
-    //  из первой работы 
     Zeros,
     ANSI_X923,
     //  новые 

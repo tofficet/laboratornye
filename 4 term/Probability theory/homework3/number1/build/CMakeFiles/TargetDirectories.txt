@@ -1,5 +1,0 @@
-/Users/daniilmolcanov/laboratornye/4 term/Probability theory/homework3/number1/build/CMakeFiles/ClusterAnalyzer.dir
-/Users/daniilmolcanov/laboratornye/4 term/Probability theory/homework3/number1/build/CMakeFiles/edit_cache.dir
-/Users/daniilmolcanov/laboratornye/4 term/Probability theory/homework3/number1/build/CMakeFiles/rebuild_cache.dir
-/Users/daniilmolcanov/laboratornye/4 term/Probability theory/homework3/number1/build/CMakeFiles/ClusterAnalyzer_autogen_timestamp_deps.dir
-/Users/daniilmolcanov/laboratornye/4 term/Probability theory/homework3/number1/build/CMakeFiles/ClusterAnalyzer_autogen.dir

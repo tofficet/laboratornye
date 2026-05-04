@@ -1,7 +1,7 @@
 ﻿#include <gtest/gtest.h>
 
 #include "cipher_context2.h"
-#include "../hw_3/xor_cipher.h"
+#include "../homework3/xor_cipher.h"
 
 #include <fstream>
 #include <string>
@@ -533,5 +533,5 @@ TEST_F(FileTest, FileDecrypt_ThrowsOnMissingFile) {
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
+    return RUN_ALL_TESTS();    
 }

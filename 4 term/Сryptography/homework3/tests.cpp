@@ -1,10 +1,10 @@
-﻿#include <gtest/gtest.h>
+#include <gtest/gtest.h>
 
-#include "../hw_3/interfaces.h"
-#include "../hw_3/padding.h"
-#include "../hw_3/modes.h"
-#include "../hw_3/cipher_context.h"
-#include "../hw_3/xor_cipher.h"
+#include "interfaces.h"
+#include "padding.h"
+#include "modes.h"
+#include "cipher_context.h"
+#include "xor_cipher.h"
 
 #include <fstream>
 #include <string>
