@@ -23,7 +23,7 @@ std::string format(const Decimal& val, int precision) {
     return ss.str();
 }
 
-// Вычисление e^r через ряд Тейлора
+// e^r через ряд Тейлора
 // e^r = sum (r^n / n!)
 Result compute_e_power_r(int r, int precision) {
     Decimal result = 0;
