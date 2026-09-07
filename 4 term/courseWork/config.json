@@ -1,0 +1,12 @@
+{
+    "h": 0.5,
+    "n": 20,
+    "Y": 1.0,
+    "K": 3,
+    "l": 2,
+    "distribution": "Uniform",
+    "params": {
+        "min": -1.0,
+        "max": 1.0
+    }
+}

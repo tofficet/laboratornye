@@ -1,0 +1,7 @@
+{
+    "p": 0.5,
+    "s_plus": 1.0,
+    "s_minus": 1.0,
+    "maxN": 20,
+    "num_simulations": 100000
+}

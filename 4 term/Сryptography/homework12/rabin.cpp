@@ -13,7 +13,7 @@ bool Rabin::isPrime(const mpz_class& n, int rounds, gmp_randclass& rng) {
     if (n % 2 == 0) return false;
 
     for (int p : SMALL_PRIMES) {
-        if (n == p) return true;
+        //if (n == p) return true;
         if (n % p == 0) return false;
     }
 

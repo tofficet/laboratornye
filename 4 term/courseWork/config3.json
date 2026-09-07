@@ -1,0 +1,11 @@
+{
+    "distribution": "binomial",
+    "steps": 15,
+    "tau": 1.5,
+    "n": 8,
+    "generations": 200,
+    "params": {
+        "trials": 12,
+        "p": 0.6
+    }
+}
